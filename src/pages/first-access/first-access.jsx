@@ -1,9 +1,10 @@
-import "./login.css";
+import "./first-access.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import loginImage from "../../assets/img-login.jpg";
+import infoIcon from "../../assets/info-icon.png";
 
-function Login() {
+function FirstAccess() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -38,16 +39,12 @@ function Login() {
     }
   };
 
-  const handlePrimeiroAcesso = () => {
-    navigate("/first-access");
-  };
-
   return (
     <>
       <div className="login-container">
         <img src={loginImage} alt="Pessoa mexendo no computador" />
         <div className="input-container">
-          <h1>Comece sua Jornada!</h1>
+          <h1>Primeiro Acesso</h1>
 
           <input
             type="text"
@@ -58,23 +55,28 @@ function Login() {
 
           <input
             type="password"
-            placeholder="Senha"
+            placeholder="Senha enviada no email"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
           />
-
-          {erro && <span className="erro-message">{erro}</span>}
 
           <div className="access-container">
             <button onClick={handleLogin} disabled={loading}>
               {loading ? "Entrando..." : "Login"}
             </button>
-            <span onClick={handlePrimeiroAcesso}>Primeiro Acesso</span>
+            <span onClick={() => navigate("/")}>Voltar para login</span>
           </div>
+
+          <div className="info-container">
+            <img src={infoIcon} alt="Pessoa mexendo no computador" />
+            <p>Essa é uma tela de primeiro acesso. Ao realizar o login, você deverá alterar sua senha inicial por uma nova de sua preferência para garantir a segurança da sua conta.</p>
+
+          </div>
+          {erro && <span className="erro-message">{erro}</span>}
         </div>
       </div>
     </>
   );
 }
 
-export default Login;
+export default FirstAccess;
