@@ -1,6 +1,5 @@
 import { useState } from "react";
 import HeaderComponent from "../../../components/header/header";
-import Modal from "../../../components/modal/Modal";
 import "./hub.css";
 import EditIcon from "../../../assets/edit.png";
 import DeleteIcon from "../../../assets/delete.png";
@@ -9,6 +8,7 @@ import EmojiIcon from "../../../assets/emoji.png";
 import ExportIcon from "../../../assets/export.png";
 import ExpandIcon from "../../../assets/expand.png";
 import SearchIcon from "../../../assets/search.png";
+import Modal from "../../../components/modal/Modal";
 import {
   PieChart, Pie, Cell, Tooltip, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -20,14 +20,13 @@ const COLORS = {
   blue:      "#2E5F9E",
   lightBlue: "#5B8EC4",
   pale:      "#A8C4E0",
-  accent:    "#3B82F6",
 };
 
 const pieData = [
-  { name: "Ótimo (9-10)",   value: 8  },
-  { name: "Bom (7-8)",      value: 12 },
-  { name: "Regular (5-6)",  value: 5  },
-  { name: "Baixo (<5)",     value: 3  },
+  { name: "Ótimo (9-10)",  value: 8  },
+  { name: "Bom (7-8)",     value: 12 },
+  { name: "Regular (5-6)", value: 5  },
+  { name: "Baixo (<5)",    value: 3  },
 ];
 const PIE_COLORS = [COLORS.navy, COLORS.blue, COLORS.lightBlue, COLORS.pale];
 
@@ -58,7 +57,6 @@ function TeachersHub() {
     { id: 4, title: "Historia da arte", date: "28/21/20002" },
     { id: 5, title: "Historia da arte", date: "28/21/20002" },
     { id: 6, title: "Historia da arte", date: "28/21/20002" },
-    { id: 7, title: "Historia da arte", date: "28/21/20002" },
   ]);
 
   const [students, setStudents] = useState([
@@ -121,6 +119,7 @@ function TeachersHub() {
                 </tbody>
               </table>
             </div>
+
             <button
               className="add-document-btn"
               onClick={() => openModal("addDocument")}
@@ -140,6 +139,7 @@ function TeachersHub() {
                     <img src={SearchIcon} alt="Buscar" width={18} height={18} />
                   </button>
                 </div>
+
                 <table className="grades-table">
                   <thead>
                     <tr>
@@ -157,7 +157,6 @@ function TeachersHub() {
                       <tr key={student.id}>
                         <td className="student-name">{student.name}</td>
 
-                        {/* Bim 1 — tem nota → editar */}
                         <td>
                           <span
                             className="grade-cell grade-cell-clickable"
@@ -170,7 +169,6 @@ function TeachersHub() {
                           </span>
                         </td>
 
-                        {/* Bim 2 — tem nota → editar */}
                         <td>
                           <span
                             className="grade-cell grade-cell-clickable"
@@ -183,7 +181,6 @@ function TeachersHub() {
                           </span>
                         </td>
 
-                        {/* Bim 3 — sem nota → lançar */}
                         <td>
                           <span
                             className="grade-cell grade-cell-clickable grade-empty"
@@ -195,7 +192,6 @@ function TeachersHub() {
                           </span>
                         </td>
 
-                        {/* Bim 4 — sem nota → lançar */}
                         <td>
                           <span
                             className="grade-cell grade-cell-clickable grade-empty"
@@ -210,7 +206,6 @@ function TeachersHub() {
                         <td className="grade-media">{student.media}</td>
 
                         <td className="actions-cell">
-                          {/* Emoji → adicionar observação */}
                           <button
                             className="action-btn"
                             title="Adicionar observação"
@@ -232,39 +227,28 @@ function TeachersHub() {
                   <h3>Insights da Turma</h3>
                   <span className="charts-subtitle">28 alunos · Matemática 2026</span>
                 </div>
-
                 <div className="charts-grid">
                   <div className="chart-block">
                     <p className="chart-label">Distribuição por Média Anual</p>
-                    <ResponsiveContainer width="100%" height={160}>
-                      <PieChart margin={{ top: 6, right: 6, bottom: 6, left: 6 }}>
-                        <Pie
-                          data={pieData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={30}
-                          outerRadius={48}
-                          paddingAngle={1}
-                          dataKey="value"
-                        >
-                          {pieData.map((_, index) => (
-                            <Cell key={index} fill={PIE_COLORS[index]} />
-                          ))}
+                    <ResponsiveContainer width="100%" height={200}>
+                      <PieChart>
+                        <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+                          {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i]} />)}
                         </Pie>
                         <Tooltip formatter={(v) => [`${v} alunos`]} />
-                        <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: 12 }} />
+                        <Legend iconType="circle" iconSize={10} />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
 
                   <div className="chart-block">
                     <p className="chart-label">Média da Turma por Bimestre</p>
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height={200}>
                       <BarChart data={barData} barSize={32}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                         <XAxis dataKey="bimestre" tick={{ fontSize: 12 }} />
                         <YAxis domain={[0, 10]} tick={{ fontSize: 12 }} />
-                        <Tooltip formatter={(v) => [`${v}`]} />
+                        <Tooltip />
                         <Bar dataKey="media" fill={COLORS.navy} radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
@@ -272,20 +256,13 @@ function TeachersHub() {
 
                   <div className="chart-block chart-block-full">
                     <p className="chart-label">Documentos Postados por Mês</p>
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height={180}>
                       <LineChart data={lineData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                         <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
                         <YAxis tick={{ fontSize: 12 }} />
                         <Tooltip formatter={(v) => [`${v} docs`]} />
-                        <Line
-                          type="monotone"
-                          dataKey="documentos"
-                          stroke={COLORS.navy}
-                          strokeWidth={2.5}
-                          dot={{ r: 4, fill: COLORS.navy }}
-                          activeDot={{ r: 6 }}
-                        />
+                        <Line type="monotone" dataKey="documentos" stroke={COLORS.navy} strokeWidth={2.5} dot={{ r: 4, fill: COLORS.navy }} activeDot={{ r: 6 }} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -305,7 +282,6 @@ function TeachersHub() {
         </div>
       </div>
 
-      {/* Modal genérico */}
       {modal && (
         <Modal
           type={modal.type}
@@ -317,6 +293,6 @@ function TeachersHub() {
       )}
     </div>
   );
-};
+}
 
 export default TeachersHub;
