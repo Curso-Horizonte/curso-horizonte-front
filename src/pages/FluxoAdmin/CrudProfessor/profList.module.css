@@ -1,0 +1,156 @@
+/* FUNDO GERAL */
+.main {
+  min-height: 50vh;
+  padding: 10px 80px;
+}
+
+.profList {
+  padding: 10px 80px 0 80px;
+}
+
+.tituloPage h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2a44;
+  margin-bottom: 8px;
+}
+
+.tituloPage p {
+  font-size: 15px;
+  color: #5c6470;
+}
+
+.containerTable {
+  margin-top: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  width: 100%;
+  height: 500px;       
+  overflow-y: auto;
+ scrollbar-width: none;  
+}
+
+.container-tabela::-webkit-scrollbar {
+    display: none;           
+}
+
+
+.tabelaActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e9edf5;
+  padding: 16px 24px;
+}
+
+.buscarProfessor {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 25px;
+  padding: 6px 12px;
+  width: 300px;
+  box-shadow: inset 0 0 0 1px #d5d9e2;
+}
+
+.inputBuscar {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  background: transparent;
+}
+
+.btnBuscar {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* BOTÃO ADICIONAR */
+.btnAdicionar {
+  background-color: #1f2a44;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btnAdicionar:hover {
+  background-color: #162035;
+}
+
+.table {
+  width: 100%;
+  height: auto;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table thead {
+  background-color: #f3f5f9;
+}
+
+.table th {
+  text-align: left;
+  padding: 18px 32px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.table td {
+  padding: 20px 32px;
+  border-top: 1px solid #edf0f5;
+  color: #444;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafc;
+}
+
+/* BOTÕES AÇÃO */
+.btnEditar,
+.btnExcluir {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 15px;
+}
+
+.btnEditar {
+  color: #1f2a44;
+}
+
+.btnExcluir {
+  color: #c0392b;
+}
+
+.btnEditar:hover {
+  text-decoration: underline;
+}
+
+.btnExcluir:hover {
+  text-decoration: underline;
+}
+
+.btnBuscar:focus,
+.btnAdicionar:focus,
+.btnEditar:focus,
+.btnExcluir:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.inputBuscar:focus {
+  outline: none;
+  box-shadow: none;
+}
