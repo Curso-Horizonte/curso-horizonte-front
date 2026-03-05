@@ -1,26 +1,32 @@
-import React from "react";
-import styles from "./alunoList.module.css";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
 import TopBar from "../../../componentes/elementos/topBar";
-
+import Alunos from "../../../Service/Aluno";
+import CardAlunoTable from "../../../componentes/CardsAlunos/CardAlunoTable";
+import EditarAluno from "../../../componentes/popupEditarCriar/editarAluno" ;
+import styles from "./alunoList.module.css";
 
 function AlunosList() {
 
-     const navigate = useNavigate();
+    const navigate = useNavigate();
+
     const [alunos, setAlunos] = useState([]);
     const [searchText, setSearchText] = useState("");
+    const [modalOpen, setModalOpen] = useState(false);
+    const [alunoSelecionado, setAlunoSelecionado] = useState(null);
+
+    async function fetchAlunos() {
+        try {
+            const data = await Alunos.getAlunos();
+            setAlunos(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Erro ao buscar alunos:", error);
+            setAlunos([]);
+        }
+    }
 
     useEffect(() => {
-        async function fetchAlunos() {
-            try {
-                const data = await Alunos.getAlunos();
-                setAlunos(Array.isArray(data) ? data : []);
-            } catch (error) {
-                console.error("Erro ao buscar professores:", error);
-                setProfessores([]);
-            }
-        }
-
-        fetchProfessores();
+        fetchAlunos();
     }, []);
 
     const alunosFiltrados = useMemo(() => {
@@ -39,22 +45,32 @@ function AlunosList() {
     const handleDeleteAluno = async (alunoId) => {
         try {
             await Alunos.deleteAluno(alunoId);
-            setAlunos(prev =>
-                prev.filter(aluno => aluno.id !== alunoId)
-            );
+            setAlunos(prev => prev.filter(aluno => aluno.id !== alunoId));
         } catch (error) {
             console.error("Erro ao excluir aluno:", error);
         }
     };
 
     const handleAddAluno = () => {
-        navigate("/aluno/create");
+        setAlunoSelecionado(null);
+        setModalOpen(true);
     };
 
     const handleEditAluno = (alunoId) => {
-        navigate(`/aluno/edit/${alunoId}`);
+        setAlunoSelecionado(alunoId);
+        setModalOpen(true);
     };
-    
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setAlunoSelecionado(null);
+    };
+
+    const handleSaved = async () => {
+        await fetchAlunos();
+        handleCloseModal();
+    };
+
     return (
         <>
             <TopBar />
@@ -82,9 +98,9 @@ function AlunosList() {
 
                         <button
                             className={styles.btnAdicionar}
-                            onClick={handleAddProfessor}
+                            onClick={handleAddAluno}
                         >
-                            + Adicionar Professor
+                            + Adicionar Aluno
                         </button>
                     </div>
 
@@ -115,6 +131,16 @@ function AlunosList() {
 
                 </div>
             </main>
+
+            {modalOpen && (
+                <EditarAluno
+                    alunoId={alunoSelecionado}
+                    onClose={handleCloseModal}
+                    onSaved={handleSaved}
+                />
+            )}
         </>
     );
 }
+
+export default AlunosList;

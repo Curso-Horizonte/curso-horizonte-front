@@ -12,6 +12,10 @@ function AdminHome() {
       navigate('/CrudProfessor/profList');
     };
 
+    const handleAlunoList = () => {
+      navigate('/CrudAluno/alunoList');
+    };
+
     return (
        <>
         <TopBar />
@@ -26,7 +30,7 @@ function AdminHome() {
         </header>
 
         <main className={styles.main}>
-            <div className={styles.btnAluno}>
+            <div className={styles.btnAluno} onClick={handleAlunoList}>
                 <h2>Alunos</h2>
                 <p>Administre seus alunos</p>
             </div>
