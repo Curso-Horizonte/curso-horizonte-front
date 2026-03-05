@@ -16,6 +16,10 @@ function AdminHome() {
       navigate('/CrudAluno/alunoList');
     };
 
+    const handleDisciplinaList = () => {
+      navigate('/CrudDisciplina/disciplinaList');
+    }
+
     return (
        <>
         <TopBar />
@@ -40,9 +44,9 @@ function AdminHome() {
                 <p>Administre seus professores</p>
             </div>
 
-            <div className={styles.btnMateria}>
-                <h2>Matérias</h2>
-                <p>Administre suas matérias</p>
+            <div className={styles.btnMateria} onClick={handleDisciplinaList}>
+                <h2>Disciplinas</h2>
+                <p>Administre suas disciplinas</p>
             </div>
         </main>
     </>

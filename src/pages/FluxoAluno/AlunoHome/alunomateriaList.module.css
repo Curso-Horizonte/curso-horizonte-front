@@ -1,0 +1,71 @@
+.alunoHeader {
+    padding: 40px 80px 10px 80px;
+}
+
+.tituloPage {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.tituloPage h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.tituloPage button {
+    background-color: #2f4561;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.tituloPage button:hover {
+    background-color: #24364d;
+}
+
+.alunoHeader p {
+    margin-top: 8px;
+    color: #444;
+    font-size: 16px;
+}
+
+.main {
+    padding: 30px 80px 60px 80px;
+}
+
+.containerTable {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+/* CARD DISCIPLINA */
+
+.containerTable div {
+    border: 2px solid #3a5678;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: 0.2s;
+}
+
+.containerTable div:hover {
+    transform: translateY(-2px);
+}
+
+.containerTable h1 {
+    font-size: 20px;
+    margin: 0 0 8px 0;
+}
+
+.containerTable p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}

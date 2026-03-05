@@ -1,0 +1,144 @@
+.main {
+  min-height: 100vh;
+  padding: 30px 80px;
+  background-color: #f5f7fb;
+}
+
+.profList {
+  padding: 10px 80px 0 80px;
+}
+
+.tituloPage h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2a44;
+  margin-bottom: 8px;
+}
+
+.tituloPage p {
+  font-size: 15px;
+  color: #5c6470;
+}
+
+.containerTable {
+  margin-top: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+}
+
+.tabelaActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e6e9f2;
+  padding: 20px 28px;
+  border-bottom: 1px solid #dde2ec;
+}
+
+.buscar {
+  display: flex;
+  align-items: center;
+  background: #f4f6fb;
+  border-radius: 30px;
+  padding: 10px 18px;
+  width: 380px;
+  box-shadow: inset 0 0 0 1px #d6dbe6;
+}
+
+.inputBuscar {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  background: transparent;
+  color: #2c3e50;
+}
+
+.btnBuscar {
+  border: none;
+  background: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.btnAdicionar {
+  background-color: #1f2a44;
+  color: #ffffff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(31, 42, 68, 0.2);
+  transition: 0.2s ease;
+}
+
+.btnAdicionar:hover {
+  background-color: #162035;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table thead {
+  background-color: #f3f5f9;
+}
+
+.table th {
+  text-align: left;
+  padding: 18px 40px;
+  font-weight: 600;
+  color: #3a4252;
+  font-size: 13px;
+}
+
+.table td {
+  padding: 22px 40px;
+  border-top: 1px solid #edf0f5;
+  color: #555;
+  font-size: 14px;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafc;
+}
+
+.btnEditar,
+.btnExcluir {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 12px;
+  color: #6c7a96;
+}
+
+.btnEditar:hover,
+.btnExcluir:hover {
+  color: #1f2a44;
+}
+
+.btnBuscar:focus,
+.btnAdicionar:focus,
+.btnEditar:focus,
+.btnExcluir:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.inputBuscar:focus {
+  outline: none;
+  box-shadow: none;
+}
