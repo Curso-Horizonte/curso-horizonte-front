@@ -7,7 +7,7 @@ function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Teachers />} />
+        <Route path="/" element={<TeachersHub />} />
         <Route path="/first-access" element={<FirstAccess />} />
       </Routes>
     </BrowserRouter>
