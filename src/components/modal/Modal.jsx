@@ -13,10 +13,11 @@ function Modal({ type, student, teacher, document, onClose, onSave, onSuccess })
 
   const addObservacao = async (body) => {
     try {
+      const user = JSON.parse(localStorage.getItem("user"));
       const payload = {
         alunoId: student?.id,
         disciplinaId: student?.disciplinaId,
-        professorId: 11,
+        professorId: user?.id,
         texto: body.texto,
       };
 

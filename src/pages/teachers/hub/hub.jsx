@@ -171,8 +171,13 @@ function TeachersHub() {
   };
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const professorId = user?.id;
+    
     getAlunosByDisciplina();
-    getProfessorDisciplinaId(11);
+    if (professorId) {
+      getProfessorDisciplinaId(professorId);
+    }
     if (professorDisciplinaId) {
       getDocumentos();
     }

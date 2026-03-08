@@ -15,7 +15,15 @@ function Teachers() {
   ];
 
   const getMaterias = async () => {
-    const professorId = 11;
+    const user = JSON.parse(localStorage.getItem("user"));
+    const professorId = user?.id;
+    
+    if (!professorId) {
+      console.error("ID do professor não encontrado");
+      setLoading(false);
+      return;
+    }
+    
     try {
       setLoading(true);
       const response = await axios.get(

@@ -1,7 +1,10 @@
 import "./login.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import loginImage from "../../assets/img-login.jpg";
+import infoIcon from "../../assets/info-icon.png";
+import axios from "axios";
+import API_BASE_URL from "../../config";
 
 function Login() {
   const navigate = useNavigate();
@@ -10,36 +13,61 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
 
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      const userData = JSON.parse(user);
+      redirectByRole(userData.roleId);
+    }
+  }, []);
+
+  const redirectByRole = (roleId) => {
+    if (roleId === 2) {
+      navigate("/teachers");
+    } else if (roleId === 3) {
+      console.log("Tela do aluno ainda não implementada");
+    } else if (roleId === 1) {
+      console.log("Tela do admin ainda não implementada");
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setErro("");
     setLoading(true);
 
     try {
-      const response = await fetch("https://api.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha }),
+      const response = await axios.post(`${API_BASE_URL}/api/usuario/login`, {
+        email,
+        senha,
       });
+      if (response.status === 200) {
+        const { usuario, primeiroLogin } = response.data;
+        
+        const userData = {
+          id: usuario.id,
+          nome: usuario.nome,
+          sobrenome: usuario.sobrenome,
+          email: usuario.email,
+          cpf: usuario.cpf,
+          roleId: usuario.roleId,
+          statusId: usuario.statusId,
+          criadoEm: usuario.criadoEm,
+          primeiroLogin: primeiroLogin,
+        };
+        localStorage.setItem("user", JSON.stringify(userData));
 
-      if (!response.ok) {
-        throw new Error("Email ou senha inválidos.");
+        if (primeiroLogin === true) {
+          navigate("/change-password");
+        } else {
+          redirectByRole(usuario.roleId);
+        }
       }
-
-      const data = await response.json();
-
-      localStorage.setItem("token", data.token);
-      console.log("Login realizado com sucesso:", data);
-
     } catch (error) {
       setErro(error.message || "Erro ao realizar login.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handlePrimeiroAcesso = () => {
-    navigate("/first-access");
   };
 
   return (
@@ -69,7 +97,11 @@ function Login() {
             <button onClick={handleLogin} disabled={loading}>
               {loading ? "Entrando..." : "Login"}
             </button>
-            <span onClick={handlePrimeiroAcesso}>Primeiro Acesso</span>
+          </div>
+
+          <div className="info-container">
+            <img src={infoIcon} alt="Informação" />
+            <p>Se este é seu primeiro acesso, utilize a senha enviada no seu email para entrar.</p>
           </div>
         </div>
       </div>
