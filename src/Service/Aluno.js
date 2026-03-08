@@ -15,7 +15,6 @@ async function getAlunoById(id) {
   try {
     const response = await fetch(`${baseUrl}/get`);
     if (!response.ok) throw new Error("Erro ao buscar aluno");
-
     const data = await response.json();
     return data.find(p => p.id === Number(id));
   } catch (error) {
@@ -24,57 +23,49 @@ async function getAlunoById(id) {
 }
 
 async function addAluno(aluno) {
-  try {
-    const response = await fetch(`${baseUrl}/add`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(aluno)
-    });
+  // Removemos o ID 0 para não confundir o backend na criação
+  const { id, ...dadosSemId } = aluno;
 
-    if (!response.ok) throw new Error("Erro ao adicionar aluno");
-    return await response.json();
-  } catch (error) {
-    console.error(error);
+  const response = await fetch(`${baseUrl}/add`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dadosSemId)
+  });
+
+  if (!response.ok) {
+    const msg = await response.text();
+    throw new Error(msg || "Erro ao adicionar aluno");
   }
+  return await response.json(); // O backend DEVE retornar o objeto com o ID criado aqui
 }
 
 async function updateAluno(id, aluno) {
-  try {
-    const response = await fetch(`${baseUrl}/update/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(aluno)
-    });
+  const response = await fetch(`${baseUrl}/update/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(aluno)
+  });
 
-    if (!response.ok) throw new Error("Erro ao atualizar aluno");
-    return await response.json();
-  } catch (error) {
-    console.error(error);
-  }
+  if (!response.ok) throw new Error("Erro ao atualizar aluno");
+  return await response.json();
 }
 
 async function deleteAluno(id) {
-  try {
-    const response = await fetch(`${baseUrl}/remove/${id}`, {
-      method: "DELETE",
-    });
+  const response = await fetch(`${baseUrl}/remove/${id}`, {
+    method: "DELETE",
+  });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Erro ${response.status}: ${errorText}`);
-    }
-
-    return true;
-  } catch (error) {
-    console.error("Erro ao deletar aluno:", error);
-    throw error;
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Erro ${response.status}: ${errorText}`);
   }
+  return true;
 }
 
-export default {
-  getAlunos,
-  getAlunoById,
-  addAluno,
-  updateAluno,
-  deleteAluno
+export default { 
+    getAlunos, 
+    getAlunoById, 
+    addAluno, 
+    updateAluno, 
+    deleteAluno 
 };

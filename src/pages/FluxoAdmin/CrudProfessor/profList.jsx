@@ -1,6 +1,7 @@
 import TopBar from "../../../componentes/elementos/topBar";
 import styles from "./profList.module.css";
 import Professores from "../../../Service/Professores";
+import ProfessorDisciplina from "../../../Service/ProfessorDisciplina";
 import CardProfessorTable from "../../../componentes/CardsProfessor/CardProfessorTable";
 import EditarProf from "../../../componentes/popupEditarCriar/editarProf";
 import { useMemo, useEffect, useState } from "react";
@@ -13,8 +14,25 @@ function ProfList() {
     const [selectedProfessorId, setSelectedProfessorId] = useState(null);
 
     async function fetchProfessores() {
+
         const data = await Professores.getProfessores();
-        setProfessores(data);
+
+        const professoresComDisciplinas = await Promise.all(
+
+            data.map(async (prof) => {
+
+                const disciplinas = await ProfessorDisciplina.getProfessorbydisciplina(prof.id);
+
+                return {
+                    ...prof,
+                    disciplinas
+                };
+
+            })
+
+        );
+
+        setProfessores(professoresComDisciplinas);
     }
 
     useEffect(() => {
@@ -38,10 +56,14 @@ function ProfList() {
     }, [professoresFormatados, searchText]);
 
     const handleDeleteProfessor = async (id) => {
+
         if (!window.confirm("Tem certeza que deseja excluir?")) return;
 
         await Professores.deleteProfessor(id);
-        setProfessores(prev => prev.filter(p => p.id !== id));
+
+        setProfessores(prev =>
+            prev.filter(p => p.id !== id)
+        );
     };
 
     const handleOpenCreate = () => {
@@ -79,12 +101,15 @@ function ProfList() {
                 <div className={styles.containerTable}>
 
                     <div className={styles.tabelaActions}>
+
                         <input
                             type="text"
                             placeholder="Pesquisar"
                             className={styles.inputBuscar}
                             value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
+                            onChange={(e) =>
+                                setSearchText(e.target.value)
+                            }
                         />
 
                         <button
@@ -93,44 +118,59 @@ function ProfList() {
                         >
                             + Adicionar Professor
                         </button>
+
                     </div>
 
                     <div className={styles.tableWrapper}>
+
                         <table className={styles.table}>
+
                             <thead>
+
                                 <tr>
                                     <th>ID</th>
                                     <th>Nome</th>
                                     <th>CPF</th>
                                     <th>Email</th>
                                     <th>Registro</th>
+                                    <th>Disciplinas</th>
                                     <th>Ações</th>
                                 </tr>
+
                             </thead>
 
                             <tbody>
+
                                 {professoresFiltrados.map(prof => (
+
                                     <CardProfessorTable
                                         key={prof.id}
                                         professor={prof}
                                         onEdit={() => handleOpenEdit(prof.id)}
                                         onDelete={() => handleDeleteProfessor(prof.id)}
                                     />
+
                                 ))}
+
                             </tbody>
+
                         </table>
+
                     </div>
 
                 </div>
             </main>
 
             {isModalOpen && (
+
                 <EditarProf
                     profId={selectedProfessorId}
                     onClose={handleCloseModal}
                     onSaved={handleAfterSave}
                 />
+
             )}
+
         </>
     );
 }

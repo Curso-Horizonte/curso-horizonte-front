@@ -1,96 +1,106 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.45);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.overlay{
+
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:100vw;
+    height:100vh;
+
+    background:rgba(0,0,0,0.45);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    z-index:9999;
+}
+
+.modal{
+
+    background:white;
+    padding:30px;
+
+    border-radius:10px;
+
+    width:520px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+
+}
+
+.modal form{
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+}
+
+.disciplinasBox{
+
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+
+}
+
+.modalButtons{
+
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:10px;
+
+}
+
+.modal{
+    background:white;
+    padding:24px;
+    border-radius:10px;
+    width:360px;        
+    max-height:80vh;    
+    overflow-y:auto;   
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    width: 800px;
+    max-width: 90%;
+}
+
+.modal input {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #ccc;
+}
+
+.modal label {
+    color: #000000;
+}
+
+.modal span {
+    color: #000000;
+}
+
+.modal h2 {
+    color: #000000;
+}
+
+.modal input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #4CAF50;
 }
 
 .modal {
-  width: 500px;
-  background-color: #f2f2f2;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    background-color: #ffffff;
+    color: #000000;
 }
 
-.modal-header {
-  background-color: #1f3b63;
-  color: white;
-  padding: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+.disciplinas-container label {
+    display: flex;
+    margin-right: 20px;
+    margin-bottom: 8px;
 }
 
-.modal-header h2 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.close-btn {
-  position: absolute;
-  right: 20px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-.modal-body {
-  padding: 30px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-
-input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #bdbdbd;
-  margin-bottom: 18px;
-  font-size: 14px;
-}
-
-input:focus {
-  outline: none;
-  border: 1px solid #1f3b63;
-}
-
-.buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.btn-cancelar {
-  background-color: #e0e0e0;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.btn-salvar {
-  background-color: #1f3b63;
-  color: white;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.btn-salvar:hover {
-  background-color: #162b4a;
+.disciplinas-container input[type="checkbox"] {
+    margin-right: 5px;
 }

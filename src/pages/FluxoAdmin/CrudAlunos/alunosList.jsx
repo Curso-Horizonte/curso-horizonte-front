@@ -1,74 +1,113 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import TopBar from "../../../componentes/elementos/topBar";
 import Alunos from "../../../Service/Aluno";
+import AlunoDisciplina from "../../../Service/AlunoDisciplina";
 import CardAlunoTable from "../../../componentes/CardsAlunos/CardAlunoTable";
-import EditarAluno from "../../../componentes/popupEditarCriar/editarAluno" ;
+import EditarAluno from "../../../componentes/popupEditarCriar/editarAluno";
 import styles from "./alunoList.module.css";
 
 function AlunosList() {
 
-    const navigate = useNavigate();
-
     const [alunos, setAlunos] = useState([]);
+    const [vinculos, setVinculos] = useState([]);
+
     const [searchText, setSearchText] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
     const [alunoSelecionado, setAlunoSelecionado] = useState(null);
 
-    async function fetchAlunos() {
+    async function fetchData() {
+
         try {
-            const data = await Alunos.getAlunos();
-            setAlunos(Array.isArray(data) ? data : []);
+
+            const alunosData = await Alunos.getAlunos();
+            const vinculosData = await AlunoDisciplina.getAll();
+
+            setAlunos(Array.isArray(alunosData) ? alunosData : []);
+            setVinculos(Array.isArray(vinculosData) ? vinculosData : []);
+
         } catch (error) {
-            console.error("Erro ao buscar alunos:", error);
-            setAlunos([]);
+
+            console.error("Erro ao carregar dados:", error);
+
         }
+
     }
 
     useEffect(() => {
-        fetchAlunos();
+        fetchData();
     }, []);
 
     const alunosFiltrados = useMemo(() => {
-        let lista = Array.isArray(alunos) ? [...alunos] : [];
+
+        let lista = [...alunos];
 
         if (searchText) {
+
             lista = lista.filter(aluno =>
                 aluno.usuario?.nome?.toLowerCase().includes(searchText.toLowerCase()) ||
                 aluno.usuario?.email?.toLowerCase().includes(searchText.toLowerCase())
             );
+
         }
 
         return lista;
+
     }, [alunos, searchText]);
 
+    function disciplinasDoAluno(alunoId) {
+
+        const disciplinas = vinculos
+            .filter(v => v.alunoId === alunoId)
+            .map(v => v.disciplinaNome);
+
+        return disciplinas.join(", ");
+
+    }
+
     const handleDeleteAluno = async (alunoId) => {
+
         try {
+
             await Alunos.deleteAluno(alunoId);
-            setAlunos(prev => prev.filter(aluno => aluno.id !== alunoId));
+
+            setAlunos(prev =>
+                prev.filter(aluno => aluno.id !== alunoId)
+            );
+
         } catch (error) {
+
             console.error("Erro ao excluir aluno:", error);
+
         }
+
     };
 
     const handleAddAluno = () => {
+
         setAlunoSelecionado(null);
         setModalOpen(true);
+
     };
 
     const handleEditAluno = (alunoId) => {
+
         setAlunoSelecionado(alunoId);
         setModalOpen(true);
+
     };
 
     const handleCloseModal = () => {
+
         setModalOpen(false);
         setAlunoSelecionado(null);
+
     };
 
     const handleSaved = async () => {
-        await fetchAlunos();
+
+        await fetchData();
         handleCloseModal();
+
     };
 
     return (
@@ -86,6 +125,7 @@ function AlunosList() {
                 <div className={styles.containerTable}>
 
                     <div className={styles.tabelaActions}>
+
                         <div className={styles.buscarAluno}>
                             <input
                                 type="text"
@@ -102,42 +142,55 @@ function AlunosList() {
                         >
                             + Adicionar Aluno
                         </button>
+
                     </div>
 
                     <div className={styles.tableWrapper}>
+
                         <table className={styles.table}>
+
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Nome</th>
                                     <th>CPF</th>
                                     <th>Email</th>
+                                    <th>Disciplinas</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
 
                             <tbody>
+
                                 {alunosFiltrados.map(aluno => (
+
                                     <CardAlunoTable
                                         key={aluno.id}
                                         aluno={aluno}
+                                        disciplinas={disciplinasDoAluno(aluno.id)}
                                         onEdit={() => handleEditAluno(aluno.id)}
                                         onDelete={() => handleDeleteAluno(aluno.id)}
                                     />
+
                                 ))}
+
                             </tbody>
+
                         </table>
+
                     </div>
 
                 </div>
             </main>
 
             {modalOpen && (
+
                 <EditarAluno
                     alunoId={alunoSelecionado}
                     onClose={handleCloseModal}
                     onSaved={handleSaved}
                 />
+
             )}
         </>
     );

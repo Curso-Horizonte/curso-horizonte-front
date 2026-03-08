@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import styles from "./editarProf.module.css";
 import Professores from "../../Service/Professores";
+import Disciplinas from "../../Service/Disciplina";
+import ProfessorDisciplina from "../../Service/ProfessorDisciplina";
+import styles from "./editarProf.module.css";
 
 function EditarProf({ profId, onClose, onSaved }) {
 
@@ -16,56 +18,100 @@ function EditarProf({ profId, onClose, onSaved }) {
         registroFuncional: ""
     });
 
+    const [disciplinas, setDisciplinas] = useState([]);
+    const [disciplinasSelecionadas, setDisciplinasSelecionadas] = useState([]);
+    const [vinculosExistentes, setVinculosExistentes] = useState([]);
+
     useEffect(() => {
-        if (isEditing) {
-            async function fetchProfessor() {
-                const data = await Professores.getProfessorById(profId);
-                if (data) setProfessorData(data);
+
+        async function carregarDados() {
+
+            const listaDisciplinas = await Disciplinas.getDisciplinas();
+            setDisciplinas(listaDisciplinas);
+
+            if (isEditing) {
+
+                const prof = await Professores.getProfessorById(profId);
+                setProfessorData(prof);
+
+                const vinculos = await ProfessorDisciplina.getProfessorbydisciplina(profId);
+
+                setVinculosExistentes(vinculos);
+
+                setDisciplinasSelecionadas(
+                    vinculos.map(v => v.disciplinaId)
+                );
             }
-            fetchProfessor();
         }
-    }, [profId, isEditing]);
+
+        carregarDados();
+
+    }, [profId]);
+
+    function toggleDisciplina(id) {
+
+        if (disciplinasSelecionadas.includes(id)) {
+
+            setDisciplinasSelecionadas(
+                disciplinasSelecionadas.filter(d => d !== id)
+            );
+
+        } else {
+
+            setDisciplinasSelecionadas(
+                [...disciplinasSelecionadas, id]
+            );
+        }
+    }
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
-        try {
-            if (isEditing) {
-                await Professores.updateProfessor(profId, professorData);
-            } else {
-                await Professores.addProfessor(professorData);
-            }
+        let professorId = profId;
 
-            // 🔥 Atualiza lista e fecha modal
-            if (onSaved) {
-                await onSaved();
-            }
+        if (isEditing) {
 
-        } catch (error) {
-            console.error("Erro ao salvar:", error);
+            await Professores.updateProfessor(profId, professorData);
+
+        } else {
+
+            const novo = await Professores.addProfessor(professorData);
+            professorId = novo.id;
         }
+
+        const disciplinasAntigas = vinculosExistentes.map(v => v.disciplinaId);
+
+        const paraAdicionar = disciplinasSelecionadas.filter(
+            id => !disciplinasAntigas.includes(id)
+        );
+
+        const paraRemover = vinculosExistentes.filter(
+            v => !disciplinasSelecionadas.includes(v.disciplinaId)
+        );
+
+        for (const id of paraAdicionar) {
+
+            await ProfessorDisciplina.vincular(professorId, id);
+        }
+
+        for (const v of paraRemover) {
+
+            await ProfessorDisciplina.remover(v.id);
+        }
+
+        onSaved();
     };
 
     return (
+
         <div className={styles.overlay}>
+
             <div className={styles.modal}>
 
-                <div className={styles.modalHeader}>
-                    <h2>
-                        {isEditing ? "Editar Professor" : "Criar Professor"}
-                    </h2>
+                <h2>{isEditing ? "Editar Professor" : "Criar Professor"}</h2>
 
-                    {/* Botão X */}
-                    <button
-                        type="button"
-                        className={styles.closeBtn}
-                        onClick={onClose}
-                    >
-                        ✕
-                    </button>
-                </div>
-
-                <form onSubmit={handleSubmit} className={styles.modalBody}>
+                <form onSubmit={handleSubmit}>
 
                     <input
                         placeholder="Nome"
@@ -134,22 +180,46 @@ function EditarProf({ profId, onClose, onSaved }) {
                         }
                     />
 
-                    <div className={styles.buttons}>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                        >
-                            Cancelar
-                        </button>
+                    <h3>Disciplinas</h3>
+
+                    <div className={styles.disciplinasBox}>
+
+                        {disciplinas.map(d => (
+
+                            <label key={d.id}>
+
+                                <input
+                                    type="checkbox"
+                                    checked={disciplinasSelecionadas.includes(d.id)}
+                                    onChange={() => toggleDisciplina(d.id)}
+                                />
+
+                                {d.nome}
+
+                            </label>
+
+                        ))}
+
+                    </div>
+
+                    <div className={styles.modalButtons}>
 
                         <button type="submit">
                             Salvar
                         </button>
+
+                        <button type="button" onClick={onClose}>
+                            Cancelar
+                        </button>
+
                     </div>
 
                 </form>
+
             </div>
+
         </div>
+
     );
 }
 
