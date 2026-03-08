@@ -41,11 +41,30 @@ function Login() {
         email,
         senha,
       });
+
+      setSenha("");
+
       if (response.status === 200) {
         const { usuario, primeiroLogin } = response.data;
         
+        let professorId = null;
+        
+        // Se for professor (roleId === 2), busca o professorId
+        if (usuario.roleId === 2) {
+          try {
+            const professorResponse = await axios.get(`${API_BASE_URL}/api/professor/get`);
+            const professor = professorResponse.data.find(p => p.usuario.id === usuario.id);
+            if (professor) {
+              professorId = professor.id;
+            }
+          } catch (err) {
+            console.error("Erro ao buscar dados do professor:", err);
+          }
+        }
+        
         const userData = {
           id: usuario.id,
+          professorId: professorId,
           nome: usuario.nome,
           sobrenome: usuario.sobrenome,
           email: usuario.email,
@@ -64,6 +83,7 @@ function Login() {
         }
       }
     } catch (error) {
+      setSenha("");
       setErro(error.message || "Erro ao realizar login.");
     } finally {
       setLoading(false);

@@ -16,7 +16,7 @@ function Teachers() {
 
   const getMaterias = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    const professorId = user?.id;
+    const professorId = user?.professorId;
     
     if (!professorId) {
       console.error("ID do professor não encontrado");

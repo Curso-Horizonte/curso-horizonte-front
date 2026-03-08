@@ -33,8 +33,12 @@ function ChangePassword() {
       const user = JSON.parse(localStorage.getItem("user"));
       
       const response = await axios.put(`${API_BASE_URL}/api/usuario/${user.id}/update/senha`, {
+        senhaAtual: '123abc',
         novaSenha: senha,
       });
+
+      setSenha("");
+      setConfirmSenha("");
 
       if (response.status === 200) {
         user.primeiroLogin = false;
@@ -53,6 +57,9 @@ function ChangePassword() {
         }
       }
     } catch (error) {
+      // Limpa os campos mesmo em caso de erro
+      setSenha("");
+      setConfirmSenha("");
       setErro(error.response?.data?.message || error.message || "Erro ao alterar senha.");
     } finally {
       setLoading(false);

@@ -172,7 +172,7 @@ function TeachersHub() {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    const professorId = user?.id;
+    const professorId = user?.professorId;
     
     getAlunosByDisciplina();
     if (professorId) {
