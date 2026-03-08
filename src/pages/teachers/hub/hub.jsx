@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import HeaderComponent from "../../../components/header/header";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
@@ -59,49 +60,82 @@ const lineData = [
   { mes: "Ago", documentos: 9 },
 ];
 
-
 function TeachersHub() {
+  const { disciplinaNome: slugNome } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const disciplinaNome = location.state?.disciplinaNome || slugNome || "Disciplina";
+  const disciplinaId = location.state?.disciplinaId;
+
   const [showCharts, setShowCharts] = useState(false);
   const [modal, setModal] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [breadcrumbs, setBreadcrumbs] = useState([
+  const [professorDisciplinaId, setProfessorDisciplinaId] = useState(null);
+  const [documents, setDocuments] = useState([]);
+
+  const breadcrumbs = [
     {
       label: "Hub do Professor",
       onClick: () => {
-        console.log("navegar para quick-access");
-        setBreadcrumbs([{ label: "Hub do Professor" }]);
+        navigate("/");
       },
     },
-    { label: "Matematica 2026" },
-  ]);
-
-  const [documents, setDocuments] = useState([
-    { id: 1, title: "Historia da arte", date: "28/21/20002", content: "" },
-    { id: 2, title: "Historia da arte", date: "28/21/20002", content: "" },
-    { id: 3, title: "Historia da arte", date: "28/21/20002", content: "" },
-    { id: 4, title: "Historia da arte", date: "28/21/20002", content: "" },
-    { id: 5, title: "Historia da arte", date: "28/21/20002", content: "" },
-    { id: 6, title: "Historia da arte", date: "28/21/20002", content: "" },
-    { id: 7, title: "Historia da arte", date: "28/21/20002", content: "" },
-  ]);
+    { label: disciplinaNome },
+  ];
 
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filtra alunos pelo nome usando contains (case insensitive)
   const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+    student.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  // ID da disciplina atual (pode vir de props/params no futuro)
-  const disciplinaId = 2;
+  const getProfessorDisciplinaId = async (professorId) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${API_BASE_URL}/api/professor_disciplina/professor/${professorId}`,
+      );
+      if (response.data.length > 0) {
+        const disciplinaEncontrada = response.data.find(
+          (disciplina) => disciplina.disciplinaId === Number(disciplinaId),
+        );
+        if (disciplinaEncontrada) {
+          setProfessorDisciplinaId(disciplinaEncontrada.id);
+        }
+      } else {
+        console.error("Nenhuma disciplina encontrada para o professor.");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar disciplina do professor:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDocumentos = async () => {
+    try {
+      setLoading(true);
+
+      const response = await axios.get(`${API_BASE_URL}/api/documento/get`);
+      const documentosFiltrados = response.data.filter(
+        (doc) => doc.professorDisciplinaId === professorDisciplinaId,
+      );
+
+      setDocuments(documentosFiltrados);
+    } catch (error) {
+      console.error("Erro ao buscar documentos do professor:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getAlunosByDisciplina = async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${API_BASE_URL}/api/aluno_disciplina`);
       const alunosFiltrados = response.data
-        .filter((item) => item.disciplinaId === disciplinaId)
+        .filter((item) => item.disciplinaId === Number(disciplinaId))
         .map((item) => ({
           id: item.alunoId,
           name: item.alunoNome,
@@ -119,9 +153,30 @@ function TeachersHub() {
     }
   };
 
+  const deleteDocumentos = async (documentId) => {
+    try {
+      setLoading(true);
+      const response = await axios.delete(
+        `${API_BASE_URL}/api/documento/remove/${documentId}`,
+      );
+      if (response.status === 200) {
+        alert("Documento deletado com sucesso!");
+        return true;
+      }
+    } catch (error) {
+      console.error("Erro ao deletar documento:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getAlunosByDisciplina();
-  }, []);
+    getProfessorDisciplinaId(11);
+    if (professorDisciplinaId) {
+      getDocumentos();
+    }
+  }, [disciplinaId, professorDisciplinaId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openModal = (type, extra = {}) => setModal({ type, ...extra });
   const closeModal = () => setModal(null);
@@ -151,8 +206,8 @@ function TeachersHub() {
                 <tbody>
                   {documents.map((doc) => (
                     <tr key={doc.id}>
-                      <td>{doc.title}</td>
-                      <td>{doc.date}</td>
+                      <td>{doc.titulo}</td>
+                      <td>{new Date(doc.data).toLocaleDateString("pt-BR")}</td>
                       <td className="actions-cell">
                         <button
                           className="action-btn edit-btn"
@@ -160,16 +215,8 @@ function TeachersHub() {
                           onClick={() =>
                             openModal("editDocument", {
                               document: doc,
-                              onSave: (updated) => {
-                                setDocuments((prev) =>
-                                  prev.map((d) =>
-                                    d.id === updated.id
-                                      ? { ...d, ...updated }
-                                      : d,
-                                  ),
-                                );
-                                closeModal();
-                              },
+                              teacher: { professorDisciplinaId },
+                              onSuccess: () => getDocumentos(),
                             })
                           }
                         >
@@ -184,9 +231,11 @@ function TeachersHub() {
                           className="action-btn delete-btn"
                           title="Remover documento"
                           onClick={() =>
-                            setDocuments((prev) =>
-                              prev.filter((d) => d.id !== doc.id),
-                            )
+                            deleteDocumentos(doc.id).then((success) => {
+                              if (success) {
+                                getDocumentos();
+                              }
+                            })
                           }
                         >
                           <img
@@ -206,18 +255,8 @@ function TeachersHub() {
               className="add-document-btn"
               onClick={() =>
                 openModal("addDocument", {
-                  onSave: (newDoc) => {
-                    setDocuments((prev) => [
-                      ...prev,
-                      {
-                        id: prev.length + 1,
-                        title: newDoc.title || "",
-                        date: new Date().toLocaleDateString(),
-                        content: newDoc.content || "",
-                      },
-                    ]);
-                    closeModal();
-                  },
+                  teacher: { professorDisciplinaId },
+                  onSuccess: () => getDocumentos(),
                 })
               }
             >
@@ -258,220 +297,234 @@ function TeachersHub() {
                   <tbody>
                     {loading ? (
                       <tr>
-                        <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+                        <td
+                          colSpan="7"
+                          style={{ textAlign: "center", padding: "20px" }}
+                        >
                           Carregando alunos...
                         </td>
                       </tr>
                     ) : filteredStudents.length === 0 ? (
                       <tr>
-                        <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
-                          {searchTerm ? "Nenhum aluno encontrado com esse nome." : "Nenhum aluno encontrado para esta disciplina."}
+                        <td
+                          colSpan="7"
+                          style={{ textAlign: "center", padding: "20px" }}
+                        >
+                          {searchTerm
+                            ? "Nenhum aluno encontrado com esse nome."
+                            : "Nenhum aluno encontrado para esta disciplina."}
                         </td>
                       </tr>
                     ) : (
                       filteredStudents.map((student) => (
-                      <tr key={student.id}>
-                        <td className="student-name">{student.name}</td>
+                        <tr key={student.id}>
+                          <td className="student-name">{student.name}</td>
 
-                        <td>
-                          {student.bim1 !== null ? (
-                            <span
-                              className="grade-cell grade-cell-clickable"
+                          <td>
+                            {student.bim1 !== null ? (
+                              <span
+                                className="grade-cell grade-cell-clickable"
+                                onClick={() =>
+                                  openModal("editGrade", {
+                                    student: {
+                                      name: student.name,
+                                      grade: student.bim1,
+                                      bimestre: "1º Bimestre",
+                                    },
+                                  })
+                                }
+                              >
+                                {student.bim1}
+                                <img
+                                  src={EditIcon}
+                                  alt="editar"
+                                  width={12}
+                                  height={12}
+                                  className="grade-edit-icon"
+                                />
+                              </span>
+                            ) : (
+                              <span
+                                className="grade-cell grade-cell-clickable grade-empty"
+                                onClick={() =>
+                                  openModal("launchGrade", {
+                                    student: {
+                                      name: student.name,
+                                      nextBim: "1º Bimestre",
+                                    },
+                                  })
+                                }
+                              >
+                                -
+                              </span>
+                            )}
+                          </td>
+
+                          <td>
+                            {student.bim2 !== null ? (
+                              <span
+                                className="grade-cell grade-cell-clickable"
+                                onClick={() =>
+                                  openModal("editGrade", {
+                                    student: {
+                                      name: student.name,
+                                      grade: student.bim2,
+                                      bimestre: "2º Bimestre",
+                                    },
+                                  })
+                                }
+                              >
+                                {student.bim2}
+                                <img
+                                  src={EditIcon}
+                                  alt="editar"
+                                  width={12}
+                                  height={12}
+                                  className="grade-edit-icon"
+                                />
+                              </span>
+                            ) : (
+                              <span
+                                className="grade-cell grade-cell-clickable grade-empty"
+                                onClick={() =>
+                                  openModal("launchGrade", {
+                                    student: {
+                                      name: student.name,
+                                      nextBim: "2º Bimestre",
+                                    },
+                                  })
+                                }
+                              >
+                                -
+                              </span>
+                            )}
+                          </td>
+
+                          <td>
+                            {student.bim3 !== null ? (
+                              <span
+                                className="grade-cell grade-cell-clickable"
+                                onClick={() =>
+                                  openModal("editGrade", {
+                                    student: {
+                                      name: student.name,
+                                      grade: student.bim3,
+                                      bimestre: "3º Bimestre",
+                                    },
+                                  })
+                                }
+                              >
+                                {student.bim3}
+                                <img
+                                  src={EditIcon}
+                                  alt="editar"
+                                  width={12}
+                                  height={12}
+                                  className="grade-edit-icon"
+                                />
+                              </span>
+                            ) : (
+                              <span
+                                className="grade-cell grade-cell-clickable grade-empty"
+                                onClick={() =>
+                                  openModal("launchGrade", {
+                                    student: {
+                                      name: student.name,
+                                      nextBim: "3º Bimestre",
+                                    },
+                                  })
+                                }
+                              >
+                                -
+                              </span>
+                            )}
+                          </td>
+
+                          <td>
+                            {student.bim4 !== null ? (
+                              <span
+                                className="grade-cell grade-cell-clickable"
+                                onClick={() =>
+                                  openModal("editGrade", {
+                                    student: {
+                                      name: student.name,
+                                      grade: student.bim4,
+                                      bimestre: "4º Bimestre",
+                                    },
+                                  })
+                                }
+                              >
+                                {student.bim4}
+                                <img
+                                  src={EditIcon}
+                                  alt="editar"
+                                  width={12}
+                                  height={12}
+                                  className="grade-edit-icon"
+                                />
+                              </span>
+                            ) : (
+                              <span
+                                className="grade-cell grade-cell-clickable grade-empty"
+                                onClick={() =>
+                                  openModal("launchGrade", {
+                                    student: {
+                                      name: student.name,
+                                      nextBim: "4º Bimestre",
+                                    },
+                                  })
+                                }
+                              >
+                                -
+                              </span>
+                            )}
+                          </td>
+
+                          <td className="grade-media">
+                            {student.media ?? "-"}
+                          </td>
+
+                          <td className="actions-cell">
+                            <button
+                              className="action-btn"
+                              title="Adicionar observação"
                               onClick={() =>
-                                openModal("editGrade", {
+                                openModal("addObservation", {
                                   student: {
                                     name: student.name,
-                                    grade: student.bim1,
-                                    bimestre: "1º Bimestre",
+                                    id: student.id,
+                                    disciplinaId: Number(disciplinaId),
                                   },
+                                  // onSave: async (data) => {
+                                  //   try {
+                                  //     await postObservacao({
+                                  //       alunoId: data.student.id,
+                                  //       professorId: 0,
+                                  //       disciplinaId: 0,
+                                  //       texto: data.text,
+                                  //     });
+                                  //     alert("Observação adicionada com sucesso!");
+                                  //     closeModal();
+                                  //   } catch (error) {
+                                  //     alert(
+                                  //       "Erro ao adicionar observação: " +
+                                  //         error.message,
+                                  //     );
+                                  //   }
+                                  // },
                                 })
                               }
                             >
-                              {student.bim1}
                               <img
-                                src={EditIcon}
-                                alt="editar"
-                                width={12}
-                                height={12}
-                                className="grade-edit-icon"
+                                src={EmojiIcon}
+                                alt="Observação"
+                                width={18}
+                                height={18}
                               />
-                            </span>
-                          ) : (
-                            <span
-                              className="grade-cell grade-cell-clickable grade-empty"
-                              onClick={() =>
-                                openModal("launchGrade", {
-                                  student: {
-                                    name: student.name,
-                                    nextBim: "1º Bimestre",
-                                  },
-                                })
-                              }
-                            >
-                              -
-                            </span>
-                          )}
-                        </td>
-
-                        <td>
-                          {student.bim2 !== null ? (
-                            <span
-                              className="grade-cell grade-cell-clickable"
-                              onClick={() =>
-                                openModal("editGrade", {
-                                  student: {
-                                    name: student.name,
-                                    grade: student.bim2,
-                                    bimestre: "2º Bimestre",
-                                  },
-                                })
-                              }
-                            >
-                              {student.bim2}
-                              <img
-                                src={EditIcon}
-                                alt="editar"
-                                width={12}
-                                height={12}
-                                className="grade-edit-icon"
-                              />
-                            </span>
-                          ) : (
-                            <span
-                              className="grade-cell grade-cell-clickable grade-empty"
-                              onClick={() =>
-                                openModal("launchGrade", {
-                                  student: {
-                                    name: student.name,
-                                    nextBim: "2º Bimestre",
-                                  },
-                                })
-                              }
-                            >
-                              -
-                            </span>
-                          )}
-                        </td>
-
-                        <td>
-                          {student.bim3 !== null ? (
-                            <span
-                              className="grade-cell grade-cell-clickable"
-                              onClick={() =>
-                                openModal("editGrade", {
-                                  student: {
-                                    name: student.name,
-                                    grade: student.bim3,
-                                    bimestre: "3º Bimestre",
-                                  },
-                                })
-                              }
-                            >
-                              {student.bim3}
-                              <img
-                                src={EditIcon}
-                                alt="editar"
-                                width={12}
-                                height={12}
-                                className="grade-edit-icon"
-                              />
-                            </span>
-                          ) : (
-                            <span
-                              className="grade-cell grade-cell-clickable grade-empty"
-                              onClick={() =>
-                                openModal("launchGrade", {
-                                  student: {
-                                    name: student.name,
-                                    nextBim: "3º Bimestre",
-                                  },
-                                })
-                              }
-                            >
-                              -
-                            </span>
-                          )}
-                        </td>
-
-                        <td>
-                          {student.bim4 !== null ? (
-                            <span
-                              className="grade-cell grade-cell-clickable"
-                              onClick={() =>
-                                openModal("editGrade", {
-                                  student: {
-                                    name: student.name,
-                                    grade: student.bim4,
-                                    bimestre: "4º Bimestre",
-                                  },
-                                })
-                              }
-                            >
-                              {student.bim4}
-                              <img
-                                src={EditIcon}
-                                alt="editar"
-                                width={12}
-                                height={12}
-                                className="grade-edit-icon"
-                              />
-                            </span>
-                          ) : (
-                            <span
-                              className="grade-cell grade-cell-clickable grade-empty"
-                              onClick={() =>
-                                openModal("launchGrade", {
-                                  student: {
-                                    name: student.name,
-                                    nextBim: "4º Bimestre",
-                                  },
-                                })
-                              }
-                            >
-                              -
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="grade-media">{student.media ?? "-"}</td>
-
-                        <td className="actions-cell">
-                          <button
-                            className="action-btn"
-                            title="Adicionar observação"
-                            onClick={() =>
-                              openModal("addObservation", {
-                                student: { name: student.name, id: student.id },
-                                // onSave: async (data) => {
-                                //   try {
-                                //     await postObservacao({
-                                //       alunoId: data.student.id,
-                                //       professorId: 0,
-                                //       disciplinaId: 0,
-                                //       texto: data.text,
-                                //     });
-                                //     alert("Observação adicionada com sucesso!");
-                                //     closeModal();
-                                //   } catch (error) {
-                                //     alert(
-                                //       "Erro ao adicionar observação: " +
-                                //         error.message,
-                                //     );
-                                //   }
-                                // },
-                              })
-                            }
-                          >
-                            <img
-                              src={EmojiIcon}
-                              alt="Observação"
-                              width={18}
-                              height={18}
-                            />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                            </button>
+                          </td>
+                        </tr>
+                      ))
                     )}
                   </tbody>
                 </table>
@@ -573,9 +626,11 @@ function TeachersHub() {
         <Modal
           type={modal.type}
           student={modal.student}
+          teacher={modal.teacher}
           document={modal.document}
           onClose={closeModal}
           onSave={modal.onSave || closeModal}
+          onSuccess={modal.onSuccess}
         />
       )}
     </div>

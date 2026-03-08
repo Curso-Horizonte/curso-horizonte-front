@@ -1,36 +1,120 @@
 import React, { useState, useEffect } from "react";
 import "./modal.css";
 import API_BASE_URL from "../../config";
+import axios from "axios";
 
-function Modal({ type, student, document, onClose, onSave }) {
-  const [docTitle, setDocTitle] = useState(document?.title || "");
-  const [docContent, setDocContent] = useState(document?.content || "");
+function Modal({ type, student, teacher, document, onClose, onSave, onSuccess }) {
+  const [docTitle, setDocTitle] = useState(document?.titulo || document?.title || "");
+  const [docContent, setDocContent] = useState(document?.conteudo || document?.content || "");
   const [gradeValue, setGradeValue] = useState(student?.grade || "");
-  const [observationType, setObservationType] = useState("Elogio");
   const [observationText, setObservationText] = useState("");
   const [existingObservations, setExistingObservations] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const addObservacao = async (body) => {
+    try {
+      const payload = {
+        alunoId: student?.id,
+        disciplinaId: student?.disciplinaId,
+        professorId: 11,
+        texto: body.texto,
+      };
+
+      setLoading(true);
+      const response = await axios.post(
+        `${API_BASE_URL}/api/observacao`,
+        payload,
+      );
+      if (response.status === 200) {
+        alert("Observação adicionada com sucesso!");
+        return true;
+      } else {
+        alert("Erro ao adicionar observação. Tente novamente.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar observação:", error);
+      alert("Erro ao adicionar observação. Tente novamente.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addDocumentos = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API_BASE_URL}/api/documento/add`, {
+        titulo: docTitle,
+        conteudo: docContent,
+        professorDisciplinaId: teacher?.professorDisciplinaId,
+      });
+      if (response.status === 200) {
+        alert("Documento adicionado com sucesso!");
+        return true;
+      } else {
+        alert("Erro ao adicionar documento. Tente novamente.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar documento:", error);
+      alert("Erro ao adicionar documento. Tente novamente.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const editDocumentos = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.patch(`${API_BASE_URL}/api/documento/update/${document?.id}`, {
+        id: document?.id,
+        titulo: docTitle,
+        conteudo: docContent,
+        professorDisciplinaId: teacher?.professorDisciplinaId,
+      });
+      if (response.status === 200) {
+        alert("Documento atualizado com sucesso!");
+        return true;
+      }
+    } catch (error) {
+      console.error("Erro ao editar documento:", error);
+      alert("Erro ao editar documento. Tente novamente.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const getObservacoes = async () => {
       try {
-        const response = await api.get(`${API_BASE_URL}/api/observacao`);
-        return response.data;
+        setLoading(true);
+        const response = await axios.get(`${API_BASE_URL}/api/observacao`);
+
+        const filtered = response.data.filter((obs) => {
+          return (
+            obs.alunoId === student.id &&
+            obs.disciplinaId === student.disciplinaId
+          );
+        });
+
+        return filtered;
       } catch (error) {
         console.error("Erro ao buscar observações:", error);
-        throw error;
+        return [];
+      } finally {
+        setLoading(false);
       }
     };
 
     if (type === "addObservation" && student?.id) {
-      getObservacoes(student.id)
-        .then((data) => {
-          setExistingObservations(data);
-        })
-        .catch((error) => {
-          console.error("Erro ao buscar observações:", error);
-        });
+      getObservacoes().then((data) => {
+        setExistingObservations(data);
+      });
     }
-  }, [type, student?.id]);
+  }, [type, student?.id, student?.disciplinaId]);
 
   let title = "";
   let bodyContent = null;
@@ -124,28 +208,17 @@ function Modal({ type, student, document, onClose, onSave }) {
               <ul>
                 {existingObservations.map((obs, index) => (
                   <li key={index}>
-                    <span>{obs.text}</span>
+                    <span>{obs.texto}</span>
+                    <div style={{ padding: "4px" }}></div>
                     <small className="obs-date">
                       {new Date(obs.data).toLocaleString()}
                     </small>
+                    <div style={{ padding: "4px" }}></div>
                   </li>
                 ))}
               </ul>
             </div>
           )}
-          <div className="modal-field modal-select-wrapper">
-            <label htmlFor="obs-type">Tipo</label>
-            <select
-              id="obs-type"
-              className="modal-input modal-select"
-              value={observationType}
-              onChange={(e) => setObservationType(e.target.value)}
-            >
-              <option>Elogio</option>
-              <option>Advertencia</option>
-              <option>Orientação</option>
-            </select>
-          </div>
           <div className="modal-field">
             <label htmlFor="obs-text">Texto da Observação</label>
             <textarea
@@ -162,15 +235,31 @@ function Modal({ type, student, document, onClose, onSave }) {
       title = "";
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     let data = null;
     switch (type) {
       case "addDocument":
-        data = { title: docTitle, content: docContent };
-        break;
+        if (docTitle.trim() && docContent.trim()) {
+          const success = await addDocumentos();
+          if (success) {
+            if (onSuccess) onSuccess();
+            onClose();
+          }
+        } else {
+          alert("Por favor, preencha o título e o conteúdo do documento.");
+        }
+        return;
       case "editDocument":
-        data = { ...document, title: docTitle, content: docContent };
-        break;
+        if (docTitle.trim() && docContent.trim()) {
+          const success = await editDocumentos();
+          if (success) {
+            if (onSuccess) onSuccess();
+            onClose();
+          }
+        } else {
+          alert("Por favor, preencha o título e o conteúdo do documento.");
+        }
+        return;
       case "editGrade":
         data = { student, grade: gradeValue };
         break;
@@ -178,8 +267,15 @@ function Modal({ type, student, document, onClose, onSave }) {
         data = { student, grade: gradeValue };
         break;
       case "addObservation":
-        data = { student, type: observationType, text: observationText };
-        break;
+        if (observationText.trim()) {
+          const success = await addObservacao({ texto: observationText });
+          if (success) {
+            onClose();
+          }
+        } else {
+          alert("Por favor, insira o texto da observação.");
+        }
+        return;
       default:
         break;
     }
@@ -202,11 +298,11 @@ function Modal({ type, student, document, onClose, onSave }) {
         <div className="modal-body">{bodyContent}</div>
 
         <div className="modal-footer">
-          <button className="modal-btn modal-btn-cancel" onClick={onClose}>
+          <button className="modal-btn modal-btn-cancel" onClick={onClose} disabled={loading}>
             Cancelar
           </button>
-          <button className="modal-btn modal-btn-save" onClick={handleSave}>
-            Salvar
+          <button className="modal-btn modal-btn-save" onClick={handleSave} disabled={loading}>
+            {loading ? "Salvando..." : "Salvar"}
           </button>
         </div>
       </div>
