@@ -1,14 +1,14 @@
+import React from 'react';
+
 function CardDisciplinaTable({ disciplina, onEdit, onDelete }) {
     return (
         <tr>
             <td>{disciplina.id}</td>
-            <td>{disciplina.nomeCompleto}</td>
-            <td>{disciplina.cpf}</td>
-            <td>{disciplina.email}</td>
-            <td>{disciplina.registroFuncional}</td>
+            <td>{disciplina.nome || "—"}</td>
+            
             <td>
-                <button onClick={onEdit}>✏</button>
-                <button onClick={onDelete}>⛔</button>
+                <button className="btnEditar" onClick={onEdit} title="Editar">✏</button>
+                <button className="btnExcluir" onClick={onDelete} title="Excluir">⛔</button>
             </td>
         </tr>
     );

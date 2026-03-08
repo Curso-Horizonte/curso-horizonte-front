@@ -1,5 +1,16 @@
 const baseUrl = "https://api-horizonte.onrender.com/api/professor_disciplina";
 
+async function getAll() {
+  try {
+    const response = await fetch(baseUrl);
+    if (!response.ok) throw new Error(`Erro ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Erro ao buscar todos os vínculos:", error);
+    return [];
+  }
+}
+
 async function getProfessorbydisciplina(id) {
   try {
     const response = await fetch(`${baseUrl}/professor/${id}`);
@@ -51,6 +62,7 @@ async function remover(id) {
 }
 
 export default {
+  getAll,
   getProfessorbydisciplina,
   vincular,
   remover

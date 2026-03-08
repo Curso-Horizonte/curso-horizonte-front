@@ -18,7 +18,7 @@ async function getDisciplinas() {
 
 async function addDisciplina(disciplina) {
   try {
-    const response = await fetch(`${baseUrl}/add`, {
+    const response = await fetch(`${baseUrl}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(disciplina)

@@ -12,7 +12,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AdminHome />} />
+        <Route path="/" element={<AlunoMateriaList />} />
         <Route path="/CrudProfessor/profList" element={<ProfList />} />
         <Route path="/CrudAluno/alunoList" element={<AlunoList />} />
         <Route path="/CrudDisciplina/disciplinaList" element={<DisciplinaList />} />
