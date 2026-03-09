@@ -1,5 +1,5 @@
 import Header from "../../../components/header/header";
-import styles from "./alunoMateriaList.module.css";
+import styles from "./alunomateriaList.module.css";
 import Disciplina from "../../../Service/Disciplina";
 import professorDisciplina from "../../../Service/professorDisciplina";
 import AlunoDisciplina from "../../../Service/AlunoDisciplina";
