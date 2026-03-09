@@ -1,40 +1,32 @@
-import React from 'react';
+import React from "react";
+import editar from "../../images/editar.png";
+import remover from "../../images/remover.svg";
+import styles from "./CardAlunoTable.module.css"
 
 function CardAlunoTable({ aluno, disciplinas, onEdit, onDelete }) {
+  return (
+    <tr>
+      <td>{aluno.id}</td>
 
-    return (
-        <tr>
+      <td>{aluno.usuario?.nome || "—"}</td>
 
-            <td>{aluno.id}</td>
+      <td>{aluno.usuario?.cpf || "—"}</td>
 
-            <td>{aluno.usuario?.nome || "—"}</td>
+      <td>{aluno.usuario?.email || "—"}</td>
 
-            <td>{aluno.usuario?.cpf || "—"}</td>
+      <td>{disciplinas || "—"}</td>
 
-            <td>{aluno.usuario?.email || "—"}</td>
+      <td>
+        <button className={styles.btn} onClick={onEdit}>
+          <img src={editar}></img>
+        </button>
 
-            <td>{disciplinas || "—"}</td>
-
-            <td>
-
-                <button
-                    className="btnEditar"
-                    onClick={onEdit}
-                >
-                    ✏
-                </button>
-
-                <button
-                    className="btnExcluir"
-                    onClick={onDelete}
-                >
-                    ⛔
-                </button>
-
-            </td>
-
-        </tr>
-    );
+        <button className={styles.btn} onClick={onDelete}>
+          <img src={remover}></img>
+        </button>
+      </td>
+    </tr>
+  );
 }
 
 export default CardAlunoTable;

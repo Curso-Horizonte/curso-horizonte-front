@@ -1,40 +1,37 @@
+import editar from "../../images/editar.png";
+import remover from "../../images/remover.svg";
+import styles from "./CardProfessorTable.module.css"
+
 function CardProfessorTable({ professor, onEdit, onDelete }) {
+  const disciplinas = professor.disciplinas
+    ?.map((d) => d.disciplinaNome)
+    .join(", ");
 
-    const disciplinas = professor.disciplinas
-        ?.map(d => d.disciplinaNome)
-        .join(", ");
+  return (
+    <tr>
+      <td>{professor.id}</td>
 
-    return (
+      <td>{professor.nomeCompleto}</td>
 
-        <tr>
+      <td>{professor.cpf}</td>
 
-            <td>{professor.id}</td>
+      <td>{professor.email}</td>
 
-            <td>{professor.nomeCompleto}</td>
+      <td>{professor.registroFuncional}</td>
 
-            <td>{professor.cpf}</td>
+      <td>{disciplinas || "-"}</td>
 
-            <td>{professor.email}</td>
+      <td>
+        <button onClick={onEdit} className={styles.btn}>
+          <img src={editar}></img>
+        </button>
 
-            <td>{professor.registroFuncional}</td>
-
-            <td>{disciplinas || "-"}</td>
-
-            <td>
-
-                <button onClick={onEdit}>
-                    ✏
-                </button>
-
-                <button onClick={onDelete}>
-                    ⛔
-                </button>
-
-            </td>
-
-        </tr>
-
-    );
+        <button onClick={onDelete} className={styles.btn}>
+          <img src={remover}></img>
+        </button>
+      </td>
+    </tr>
+  );
 }
 
 export default CardProfessorTable;

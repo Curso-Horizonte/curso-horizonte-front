@@ -1,4 +1,7 @@
 import React from 'react';
+import editar from "../../images/editar.png";
+import remover from "../../images/remover.svg";
+import styles from "./CardDisciplinaTable.module.css"
 
 function CardDisciplinaTable({ disciplina, onEdit, onDelete }) {
     return (
@@ -7,8 +10,12 @@ function CardDisciplinaTable({ disciplina, onEdit, onDelete }) {
             <td>{disciplina.nome || "—"}</td>
             
             <td>
-                <button className="btnEditar" onClick={onEdit} title="Editar">✏</button>
-                <button className="btnExcluir" onClick={onDelete} title="Excluir">⛔</button>
+                <button className={styles.btn} onClick={onEdit} title="Editar">
+                    <img src={editar}></img>
+                </button>
+                <button className={styles.btn} onClick={onDelete} title="Excluir">
+                    <img src={remover}></img>
+                </button>
             </td>
         </tr>
     );
