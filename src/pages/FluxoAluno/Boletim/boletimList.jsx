@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../../../components/header/header";
 import AlunoDisciplinaService from "../../../Service/AlunoDisciplina";
 import DisciplinaService from "../../../Service/Disciplina";
-import styles from "./boletimList.module.css";
+import styles from "./BoletimList.module.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 

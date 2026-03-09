@@ -4,7 +4,7 @@ import Disciplina from "../../../Service/Disciplina";
 import professorDisciplina from "../../../Service/professorDisciplina";
 import AlunoDisciplina from "../../../Service/AlunoDisciplina";
 import { useNavigate, useParams } from "react-router-dom";
-import CardAlunoMateria from "../../../componentes/CardsAlunoMateria/cardAlunoMateria";
+import CardAlunoMateria from "../../../componentes/CardsAlunoMateria/CardAlunoMateria";
 import { useEffect, useState } from "react";
 
 function AlunoMateriaList() {
