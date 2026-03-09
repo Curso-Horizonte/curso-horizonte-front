@@ -1,0 +1,60 @@
+.teachers-container{
+    display: flex;
+    flex-direction: column;
+    padding: 64px 64px;
+}
+
+.teachers-header {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+}
+
+.teachers-content {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: row;
+    gap: 64px;
+}
+
+.teacher-card {
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border: 2px solid #1E3A5F;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.teacher-card:hover {
+    background-color: #1E3A5F;
+    box-shadow: 0 8px 16px rgba(30, 58, 95, 0.3);
+    transform: translateY(-4px);
+}
+
+.teacher-card:hover h2,
+.teacher-card:hover h5 {
+    color: #ffffff;
+}
+
+.teacher-card:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(30, 58, 95, 0.2);
+    background-color: #162d4a;
+}
+
+.teacher-card h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.teacher-card h5{
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+}
