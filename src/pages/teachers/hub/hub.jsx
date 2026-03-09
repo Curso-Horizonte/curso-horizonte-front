@@ -86,6 +86,7 @@ function TeachersHub() {
 
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [notasMap, setNotasMap] = useState({});
 
   const filteredStudents = students.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -141,6 +142,7 @@ function TeachersHub() {
           id: item.alunoId,
           alunoDisciplinaId: item.id,
           name: item.alunoNome,
+          alunoId: item.alunoId,
           bim1: null,
           bim2: null,
           bim3: null,
@@ -148,41 +150,65 @@ function TeachersHub() {
           media: null,
         }));
       setStudents(alunosFiltrados);
+      return alunosFiltrados;
     } catch (error) {
       console.error("Erro ao buscar alunos:", error);
+      return [];
     } finally {
       setLoading(false);
     }
   };
 
-  const getNotasByDisciplina = async () => {
+  const getNotasByDisciplina = async (studentsList) => {
     try {
       setLoading(true);
+      const listToUse = studentsList || students;
 
-      const requests = students.map((student) =>
+      const requests = listToUse.map((student) =>
         axios.get(
-          `${API_BASE_URL}/api/nota/aluno/${student.id}/disciplina/${disciplinaId}`,
+          `${API_BASE_URL}/api/nota/aluno/${student.alunoId}/disciplina/${disciplinaId}`,
         ),
       );
 
       const responses = await Promise.all(requests);
 
-      const studentsWithGrades = students.map((student, index) => {
+      const newNotasMap = {};
+      const studentsWithGrades = listToUse.map((student, index) => {
         const notasAluno = responses[index].data || [];
 
         let bim1 = null;
         let bim2 = null;
         let bim3 = null;
         let bim4 = null;
+        let bim1Data = null;
+        let bim2Data = null;
+        let bim3Data = null;
+        let bim4Data = null;
 
         notasAluno.forEach((nota) => {
-          if (nota.bimestre === 1) bim1 = nota.valor;
-          if (nota.bimestre === 2) bim2 = nota.valor;
-          if (nota.bimestre === 3) bim3 = nota.valor;
-          if (nota.bimestre === 4) bim4 = nota.valor;
+          if (nota.bimestre === 1) {
+            bim1 = nota.valor;
+            bim1Data = nota;
+            newNotasMap[`${student.alunoId}-1`] = nota;
+          }
+          if (nota.bimestre === 2) {
+            bim2 = nota.valor;
+            bim2Data = nota;
+            newNotasMap[`${student.alunoId}-2`] = nota;
+          }
+          if (nota.bimestre === 3) {
+            bim3 = nota.valor;
+            bim3Data = nota;
+            newNotasMap[`${student.alunoId}-3`] = nota;
+          }
+          if (nota.bimestre === 4) {
+            bim4 = nota.valor;
+            bim4Data = nota;
+            newNotasMap[`${student.alunoId}-4`] = nota;
+          }
         });
 
-        const notasValidas = [bim1, bim2, bim3, bim4].filter((n) => n !== null);
+      const notasValidas = [bim1, bim2, bim3, bim4].filter((n) => n !== null);
 
         const media =
           notasValidas.length > 0
@@ -203,6 +229,7 @@ function TeachersHub() {
       });
 
       setStudents(studentsWithGrades);
+      setNotasMap(newNotasMap);
     } catch (error) {
       console.error("Erro ao buscar notas:", error);
     } finally {
@@ -228,21 +255,31 @@ function TeachersHub() {
   };
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const professorId = user?.professorId;
+    const loadData = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const professorId = user?.professorId;
 
-    getAlunosByDisciplina();
-    if (professorId) {
-      getProfessorDisciplinaId(professorId);
+      const alunosList = await getAlunosByDisciplina();
+      
+      if (professorId) {
+        await getProfessorDisciplinaId(professorId);
+      }
+      
+      if (alunosList.length > 0) {
+        await getNotasByDisciplina(alunosList);
+      }
+    };
+
+    if (disciplinaId) {
+      loadData();
     }
+  }, [disciplinaId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     if (professorDisciplinaId) {
       getDocumentos();
     }
-
-    if (students.length > 0) {
-      getNotasByDisciplina();
-    }
-  }, [disciplinaId, professorDisciplinaId, students.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [professorDisciplinaId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openModal = (type, extra = {}) => setModal({ type, ...extra });
   const closeModal = () => setModal(null);
@@ -398,6 +435,9 @@ function TeachersHub() {
                                       bimestre: 1,
                                       bimestreLabel: "1º Bimestre",
                                       alunoDisciplinaId: student.alunoDisciplinaId,
+                                      alunoId: student.alunoId,
+                                      notaId: notasMap[`${student.alunoId}-1`]?.id,
+                                      descricao: notasMap[`${student.alunoId}-1`]?.descricao || "",
                                     },
                                     onSuccess: () => getNotasByDisciplina(),
                                   })
@@ -444,6 +484,9 @@ function TeachersHub() {
                                       bimestre: 2,
                                       bimestreLabel: "2º Bimestre",
                                       alunoDisciplinaId: student.alunoDisciplinaId,
+                                      alunoId: student.alunoId,
+                                      notaId: notasMap[`${student.alunoId}-2`]?.id,
+                                      descricao: notasMap[`${student.alunoId}-2`]?.descricao || "",
                                     },
                                     onSuccess: () => getNotasByDisciplina(),
                                   })
@@ -490,6 +533,9 @@ function TeachersHub() {
                                       bimestre: 3,
                                       bimestreLabel: "3º Bimestre",
                                       alunoDisciplinaId: student.alunoDisciplinaId,
+                                      alunoId: student.alunoId,
+                                      notaId: notasMap[`${student.alunoId}-3`]?.id,
+                                      descricao: notasMap[`${student.alunoId}-3`]?.descricao || "",
                                     },
                                     onSuccess: () => getNotasByDisciplina(),
                                   })
@@ -536,6 +582,9 @@ function TeachersHub() {
                                       bimestre: 4,
                                       bimestreLabel: "4º Bimestre",
                                       alunoDisciplinaId: student.alunoDisciplinaId,
+                                      alunoId: student.alunoId,
+                                      notaId: notasMap[`${student.alunoId}-4`]?.id,
+                                      descricao: notasMap[`${student.alunoId}-4`]?.descricao || "",
                                     },
                                     onSuccess: () => getNotasByDisciplina(),
                                   })

@@ -7,7 +7,7 @@ function Modal({ type, student, teacher, document, onClose, onSave, onSuccess })
   const [docTitle, setDocTitle] = useState(document?.titulo || document?.title || "");
   const [docContent, setDocContent] = useState(document?.conteudo || document?.content || "");
   const [gradeValue, setGradeValue] = useState(student?.grade || "");
-  const [gradeDescription, setGradeDescription] = useState("");
+  const [gradeDescription, setGradeDescription] = useState(student?.descricao || "");
   const [observationText, setObservationText] = useState("");
   const [existingObservations, setExistingObservations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ function Modal({ type, student, teacher, document, onClose, onSave, onSuccess })
       };
 
       setLoading(true);
-      const response = await axios.post(`${API_BASE_URL}/api/nota/add`, payload);
+      const response = await axios.post(`${API_BASE_URL}/api/nota`, payload);
       if (response.status === 200 || response.status === 201) {
         alert("Nota lançada com sucesso!");
         return true;
@@ -54,10 +54,10 @@ function Modal({ type, student, teacher, document, onClose, onSave, onSuccess })
 
       setLoading(true);
       const response = await axios.patch(
-        `${API_BASE_URL}/api/nota/update/${student?.alunoDisciplinaId}/${student?.bimestre}`,
+        `${API_BASE_URL}/api/nota/${student?.notaId}`,
         payload
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("Nota atualizada com sucesso!");
         return true;
       } else {
@@ -79,7 +79,7 @@ function Modal({ type, student, teacher, document, onClose, onSave, onSuccess })
       const payload = {
         alunoId: student?.id,
         disciplinaId: student?.disciplinaId,
-        professorId: user?.id,
+        professorId: user?.professorId,
         texto: body.texto,
       };
 
