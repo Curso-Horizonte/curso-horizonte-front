@@ -1,58 +1,50 @@
 .alunoHeader {
     padding: 40px 80px 10px 80px;
+    background-color: #f0f2f5;
 }
 
 .tituloPage {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    flex-direction: column;
+    gap: 5px;
+    color: #1f2a40;
 }
 
 .tituloPage h1 {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
     margin: 0;
-}
-
-.tituloPage button {
-    background-color: #2f4561;
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.tituloPage button:hover {
-    background-color: #24364d;
+    color: #1f2a40;
 }
 
 .alunoHeader p {
-    margin-top: 10px;
-    font-size: 16px;
-    color: #444;
+    margin-top: 5px;
+    font-size: 18px;
+    color: #3f3f3f;
 }
 
 .main {
     padding: 30px 80px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .containerTable {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
 
-/* CARD */
-
 .card {
-    border: 2px solid #3f5c7c;
+    border: 2px solid #2f4561;
     border-radius: 8px;
-    padding: 22px;
-    background-color: #f5f5f5;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: 0.2s;
+    cursor: pointer;
 }
 
 .card:hover {
@@ -60,11 +52,45 @@
 }
 
 .card h2 {
-    font-size: 20px;
-    margin-bottom: 6px;
+    font-size: 18px;
+    color: #2f4561;
+    margin-bottom: 8px;
 }
 
 .card p {
     font-size: 14px;
-    color: #555;
+    color: #1f2a40;
+    line-height: 1.4;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+.modal button:hover {
+    background-color: #24364d;
+}
+
+.observacoesContainer, .documentosContainer {
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+h2 {
+    color: #2f4561;
+    margin-bottom: 15px;
+}
+
+p{
+    color: #3f3f3f;
 }

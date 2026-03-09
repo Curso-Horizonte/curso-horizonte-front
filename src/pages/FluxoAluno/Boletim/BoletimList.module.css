@@ -1,0 +1,64 @@
+.main {
+  min-height: 100vh;
+  padding: 30px 80px;
+  background-color: #f5f7fb;
+}
+
+.profList {
+  padding: 10px 80px 0 80px;
+}
+
+.tituloPage h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2a44;
+  margin-bottom: 8px;
+}
+
+.tituloPage p {
+  font-size: 15px;
+  color: #5c6470;
+}
+
+.containerTable {
+  margin-top: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+}
+
+.btnAdicionar:hover {
+  background-color: #162035;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table thead {
+  background-color: #f3f5f9;
+}
+
+.table th {
+  text-align: left;
+  padding: 18px 40px;
+  font-weight: 600;
+  color: #3a4252;
+  font-size: 13px;
+}
+
+.table td {
+  padding: 22px 40px;
+  border-top: 1px solid #edf0f5;
+  color: #555;
+  font-size: 14px;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafc;
+}
