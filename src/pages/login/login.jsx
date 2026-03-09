@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import loginImage from "../../assets/img-login.jpg";
 import infoIcon from "../../assets/info-icon.png";
 import axios from "axios";
+import Aluno from "../../Service/Aluno";
 import API_BASE_URL from "../../config";
 
 function Login() {
@@ -17,17 +18,17 @@ function Login() {
     const user = localStorage.getItem("user");
     if (user) {
       const userData = JSON.parse(user);
-      redirectByRole(userData.roleId);
+      redirectByRole(userData.roleId, userData.alunoId);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const redirectByRole = (roleId) => {
+  const redirectByRole = (roleId, alunoId) => {
     if (roleId === 2) {
       navigate("/teachers");
     } else if (roleId === 3) {
-      console.log("Tela do aluno ainda não implementada");
+      navigate(`/aluno/${alunoId}`);
     } else if (roleId === 1) {
-      console.log("Tela do admin ainda não implementada");
+      navigate("/admin");
     }
   };
 
@@ -42,10 +43,13 @@ function Login() {
         senha,
       });
 
+      console.log("Resposta do login:", response);
+
       setSenha("");
 
       if (response.status === 200) {
-        const { usuario, primeiroLogin } = response.data;
+        const { usuario, primeiroLogin} = response.data;
+
         
         let professorId = null;
         
@@ -61,10 +65,27 @@ function Login() {
             console.error("Erro ao buscar dados do professor:", err);
           }
         }
+
+      
+        let alunoId = null;
+        // Se for aluno (roleId === 3), busca o alunoId
+         if (usuario.roleId === 3) {
+            try {
+              const aluno = await Aluno.getAlunoById(usuario.id);
+              console.log("Dados do aluno:", aluno);
+              if (aluno) {
+                alunoId = aluno.id;
+              }
+            } catch (err) {
+              console.error("Erro ao buscar dados do aluno:", err);
+            }
+          }
+
         
         const userData = {
           id: usuario.id,
           professorId: professorId,
+          alunoId: alunoId,
           nome: usuario.nome,
           sobrenome: usuario.sobrenome,
           email: usuario.email,
@@ -79,7 +100,7 @@ function Login() {
         if (primeiroLogin === true) {
           navigate("/change-password");
         } else {
-          redirectByRole(usuario.roleId);
+          redirectByRole(usuario.roleId, alunoId);
         }
       }
     } catch (error) {

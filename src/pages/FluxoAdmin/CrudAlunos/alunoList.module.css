@@ -1,0 +1,225 @@
+/* ── Layout ── */
+
+.main {
+  min-height: 50vh;
+  padding: 10px 80px;
+}
+
+.profList {
+  padding: 10px 80px 0 80px;
+}
+
+/* ── Título ── */
+
+.tituloPage h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2a44;
+  margin-bottom: 8px;
+}
+
+.tituloPage h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2a44;
+  margin-bottom: 4px;
+}
+
+/* ── Container da tabela ── */
+
+.containerTable {
+  margin-top: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  width: 100%;
+  height: 500px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.containerTable::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Toolbar ── */
+
+.tabelaActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e9edf5;
+  padding: 16px 24px;
+}
+
+.buscarWrapper {
+  display: flex;
+  align-items: flex-start;
+  padding: 6px 12px;
+  width: 260px;
+  gap: 8px;
+}
+
+.inputBuscar {
+  background-color: #fefdfe;
+  border-radius: 40px;
+  width: 200px;
+  flex: 1;
+  font-size: 14px;
+  border: none;
+  color: #2c3e50;
+}
+
+.inputBuscar::placeholder {
+  color: #aab0bf;
+}
+
+.inputBuscar:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.btnBuscar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  color: #6c7a96;
+  transition: color 0.15s;
+}
+
+.btnBuscar:hover {
+  color: #1f2a44;
+}
+
+.btnBuscar:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.btnAdicionar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #1f2a44;
+  color: #ffffff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(31, 42, 68, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.btnAdicionar:hover {
+  background-color: #162035;
+}
+
+.btnAdicionar:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ── Tabela ── */
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  height: auto;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table thead {
+  background-color: #f3f5f9;
+}
+
+.table th {
+  text-align: left;
+  padding: 18px 32px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.table td {
+  padding: 20px 32px;
+  border-top: 1px solid #edf0f5;
+  color: #444;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafc;
+}
+
+/* ── Paginação ── */
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  border-top: 1px solid #edf0f5;
+  font-size: 13px;
+  color: #6c7a96;
+}
+
+.rowsPerPage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rowsSelect {
+  border: 1px solid #d0d5e0;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 13px;
+  color: #3a4252;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.pageInfo {
+  color: #3a4252;
+  font-size: 13px;
+}
+
+.btnPaginacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #d0d5e0;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  color: #6c7a96;
+  font-size: 14px;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.btnPaginacao:hover:not(:disabled) {
+  background-color: #f0f2f8;
+  color: #1f2a44;
+}
+
+.btnPaginacao:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

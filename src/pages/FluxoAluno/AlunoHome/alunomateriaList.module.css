@@ -1,0 +1,65 @@
+.alunoHeader {
+    padding: 40px 80px 10px 80px;
+}
+
+.tituloPage {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.tituloPage h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0;
+    color: #2f4561;
+}
+
+.tituloPage button {
+    background-color: #2f4561;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.tituloPage button:hover {
+    background-color: #24364d;
+}
+
+.alunoHeader p {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #444;
+}
+
+.main {
+    padding: 30px 80px;
+}
+
+.containerTable {
+    display: flex;
+    flex-wrap: wrap;
+    cursor: pointer;
+    gap: 40px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+    font-size: 20px;
+    margin-bottom: 6px;
+    color: #2f4561; 
+}
+
+.card p {
+    font-size: 14px;
+    color: #333; 
+}
