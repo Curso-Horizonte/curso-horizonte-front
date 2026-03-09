@@ -1,4 +1,4 @@
-    import TopBar from "../../../componentes/elementos/topBar";
+    import TopBar from "../../../components/elementos/topBar";
     import styles from "./alunoMateriaList.module.css";
     import Alunos from "../../../Service/Aluno";
     import { useMemo, useEffect, useState } from "react";

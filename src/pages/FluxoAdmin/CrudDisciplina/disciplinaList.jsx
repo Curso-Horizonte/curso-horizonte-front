@@ -1,8 +1,8 @@
-import TopBar from "../../../componentes/elementos/topBar";
+import TopBar from "../../../components/elementos/topBar";
 import styles from "./disciplina.module.css";
 import Disciplina from "../../../Service/Disciplina";
-import CardDisciplinaTable from "../../../componentes/CardsDisciplina/CardDisciplinaTable";
-import EditarDisciplina from "../../../componentes/popupEditarCriar/editarDisciplina";
+import CardDisciplinaTable from "../../../components/CardsDisciplina/CardDisciplinaTable";
+import EditarDisciplina from "../../../components/popupEditarCriar/editarDisciplina";
 import { useMemo, useEffect, useState } from "react";
 import lupa from "../../../images/lupa.svg";
 import adicionar from "../../../images/adicionar.svg";

@@ -1,9 +1,9 @@
-import TopBar from "../../../componentes/elementos/topBar";
+import TopBar from "../../../components/elementos/topBar";
 import styles from "./profList.module.css";
 import Professores from "../../../Service/Professores";
 import ProfessorDisciplina from "../../../Service/ProfessorDisciplina";
-import CardProfessorTable from "../../../componentes/CardsProfessor/CardProfessorTable";
-import EditarProf from "../../../componentes/popupEditarCriar/editarProf";
+import CardProfessorTable from "../../../components/CardsProfessor/CardProfessorTable";
+import EditarProf from "../../../components/popupEditarCriar/editarProf";
 import { useMemo, useEffect, useState } from "react";
 import lupa from "../../../images/lupa.svg";
 import adicionar from "../../../images/adicionar.svg";

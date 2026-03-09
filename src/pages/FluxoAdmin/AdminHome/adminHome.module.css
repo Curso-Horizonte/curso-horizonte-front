@@ -1,6 +1,11 @@
+:global(html),
+:global(body) {
+    background-color: #FBFDFF;
+}
+
 .adminHome {
     padding: 40px 60px 20px 60px;
-    background-color: #f4f4f4;
+    background-color: #FBFDFF;
 }
 
 .topBar {
@@ -23,6 +28,7 @@
 .tituloPage h1 {
     font-size: 28px;
     font-weight: 700;
+    margin-top: 20px;
     margin-bottom: 8px;
     color: #1f1f1f;
 }
@@ -38,7 +44,7 @@ main {
     display: flex;
     gap: 40px;
     padding: 30px 60px;
-    background-color: #f4f4f4;
+    background-color: #FBFDFF;
 }
 
 /* CARDS */

@@ -25,9 +25,9 @@ function Login() {
     if (roleId === 2) {
       navigate("/teachers");
     } else if (roleId === 3) {
-      console.log("Tela do aluno ainda não implementada");
+      navigate("/aluno");
     } else if (roleId === 1) {
-      console.log("Tela do admin ainda não implementada");
+      navigate("/admin");
     }
   };
 

@@ -1,9 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
-import TopBar from "../../../componentes/elementos/topBar";
+import TopBar from "../../../components/elementos/topBar";
 import Alunos from "../../../Service/Aluno";
 import AlunoDisciplina from "../../../Service/AlunoDisciplina";
-import CardAlunoTable from "../../../componentes/CardsAlunos/CardAlunoTable";
-import EditarAluno from "../../../componentes/popupEditarCriar/editarAluno";
+import CardAlunoTable from "../../../components/CardsAlunos/CardAlunoTable";
+import EditarAluno from "../../../components/popupEditarCriar/editarAluno";
 import styles from "./alunoList.module.css";
 import lupa from "../../../images/lupa.svg";
 import adicionar from "../../../images/adicionar.svg";
