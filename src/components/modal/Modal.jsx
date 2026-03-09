@@ -7,9 +7,71 @@ function Modal({ type, student, teacher, document, onClose, onSave, onSuccess })
   const [docTitle, setDocTitle] = useState(document?.titulo || document?.title || "");
   const [docContent, setDocContent] = useState(document?.conteudo || document?.content || "");
   const [gradeValue, setGradeValue] = useState(student?.grade || "");
+  const [gradeDescription, setGradeDescription] = useState("");
   const [observationText, setObservationText] = useState("");
   const [existingObservations, setExistingObservations] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const addNota = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const payload = {
+        alunoDisciplinaId: student?.alunoDisciplinaId,
+        professorId: user?.professorId,
+        valor: Number(gradeValue),
+        descricao: gradeDescription,
+        bimestre: student?.bimestre,
+      };
+
+      setLoading(true);
+      const response = await axios.post(`${API_BASE_URL}/api/nota/add`, payload);
+      if (response.status === 200 || response.status === 201) {
+        alert("Nota lançada com sucesso!");
+        return true;
+      } else {
+        alert("Erro ao lançar nota. Tente novamente.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Erro ao lançar nota:", error);
+      alert("Erro ao lançar nota. Tente novamente.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const editNota = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const payload = {
+        alunoDisciplinaId: student?.alunoDisciplinaId,
+        professorId: user?.professorId,
+        valor: Number(gradeValue),
+        descricao: gradeDescription,
+        bimestre: student?.bimestre,
+      };
+
+      setLoading(true);
+      const response = await axios.patch(
+        `${API_BASE_URL}/api/nota/update/${student?.alunoDisciplinaId}/${student?.bimestre}`,
+        payload
+      );
+      if (response.status === 200) {
+        alert("Nota atualizada com sucesso!");
+        return true;
+      } else {
+        alert("Erro ao atualizar nota. Tente novamente.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar nota:", error);
+      alert("Erro ao atualizar nota. Tente novamente.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addObservacao = async (body) => {
     try {
@@ -174,29 +236,59 @@ function Modal({ type, student, teacher, document, onClose, onSave, onSuccess })
     case "editGrade":
       title = `Editar Nota - ${student?.name || ""}`;
       bodyContent = (
-        <div className="modal-field">
-          <label>{student?.bimestre}</label>
-          <input
-            type="number"
-            className="modal-input"
-            value={gradeValue}
-            onChange={(e) => setGradeValue(e.target.value)}
-          />
-        </div>
+        <>
+          <div className="modal-field">
+            <label>{student?.bimestreLabel}</label>
+            <input
+              type="number"
+              className="modal-input"
+              value={gradeValue}
+              onChange={(e) => setGradeValue(e.target.value)}
+              min="0"
+              max="10"
+              step="0.1"
+            />
+          </div>
+          <div className="modal-field">
+            <label htmlFor="grade-desc">Descrição</label>
+            <textarea
+              id="grade-desc"
+              className="modal-textarea"
+              value={gradeDescription}
+              onChange={(e) => setGradeDescription(e.target.value)}
+              placeholder="Ex: Prova, Trabalho, Participação..."
+            />
+          </div>
+        </>
       );
       break;
     case "launchGrade":
       title = `Lançar Nota - ${student?.name || ""}`;
       bodyContent = (
-        <div className="modal-field">
-          <label>{student?.nextBim}</label>
-          <input
-            type="number"
-            className="modal-input"
-            value={gradeValue}
-            onChange={(e) => setGradeValue(e.target.value)}
-          />
-        </div>
+        <>
+          <div className="modal-field">
+            <label>{student?.bimestreLabel}</label>
+            <input
+              type="number"
+              className="modal-input"
+              value={gradeValue}
+              onChange={(e) => setGradeValue(e.target.value)}
+              min="0"
+              max="10"
+              step="0.1"
+            />
+          </div>
+          <div className="modal-field">
+            <label htmlFor="grade-desc">Descrição</label>
+            <textarea
+              id="grade-desc"
+              className="modal-textarea"
+              value={gradeDescription}
+              onChange={(e) => setGradeDescription(e.target.value)}
+              placeholder="Ex: Prova, Trabalho, Participação..."
+            />
+          </div>
+        </>
       );
       break;
     case "addObservation":
@@ -262,11 +354,27 @@ function Modal({ type, student, teacher, document, onClose, onSave, onSuccess })
         }
         return;
       case "editGrade":
-        data = { student, grade: gradeValue };
-        break;
+        if (gradeValue !== "" && gradeValue !== null) {
+          const success = await editNota();
+          if (success) {
+            if (onSuccess) onSuccess();
+            onClose();
+          }
+        } else {
+          alert("Por favor, insira o valor da nota.");
+        }
+        return;
       case "launchGrade":
-        data = { student, grade: gradeValue };
-        break;
+        if (gradeValue !== "" && gradeValue !== null) {
+          const success = await addNota();
+          if (success) {
+            if (onSuccess) onSuccess();
+            onClose();
+          }
+        } else {
+          alert("Por favor, insira o valor da nota.");
+        }
+        return;
       case "addObservation":
         if (observationText.trim()) {
           const success = await addObservacao({ texto: observationText });

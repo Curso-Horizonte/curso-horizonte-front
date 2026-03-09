@@ -64,7 +64,8 @@ function TeachersHub() {
   const { disciplinaNome: slugNome } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const disciplinaNome = location.state?.disciplinaNome || slugNome || "Disciplina";
+  const disciplinaNome =
+    location.state?.disciplinaNome || slugNome || "Disciplina";
   const disciplinaId = location.state?.disciplinaId;
 
   const [showCharts, setShowCharts] = useState(false);
@@ -138,6 +139,7 @@ function TeachersHub() {
         .filter((item) => item.disciplinaId === Number(disciplinaId))
         .map((item) => ({
           id: item.alunoId,
+          alunoDisciplinaId: item.id,
           name: item.alunoNome,
           bim1: null,
           bim2: null,
@@ -148,6 +150,61 @@ function TeachersHub() {
       setStudents(alunosFiltrados);
     } catch (error) {
       console.error("Erro ao buscar alunos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getNotasByDisciplina = async () => {
+    try {
+      setLoading(true);
+
+      const requests = students.map((student) =>
+        axios.get(
+          `${API_BASE_URL}/api/nota/aluno/${student.id}/disciplina/${disciplinaId}`,
+        ),
+      );
+
+      const responses = await Promise.all(requests);
+
+      const studentsWithGrades = students.map((student, index) => {
+        const notasAluno = responses[index].data || [];
+
+        let bim1 = null;
+        let bim2 = null;
+        let bim3 = null;
+        let bim4 = null;
+
+        notasAluno.forEach((nota) => {
+          if (nota.bimestre === 1) bim1 = nota.valor;
+          if (nota.bimestre === 2) bim2 = nota.valor;
+          if (nota.bimestre === 3) bim3 = nota.valor;
+          if (nota.bimestre === 4) bim4 = nota.valor;
+        });
+
+        const notasValidas = [bim1, bim2, bim3, bim4].filter((n) => n !== null);
+
+        const media =
+          notasValidas.length > 0
+            ? (
+                notasValidas.reduce((acc, n) => acc + n, 0) /
+                notasValidas.length
+              ).toFixed(1)
+            : null;
+
+        return {
+          ...student,
+          bim1,
+          bim2,
+          bim3,
+          bim4,
+          media,
+        };
+      });
+
+      setStudents(studentsWithGrades);
+    } catch (error) {
+      console.error("Erro ao buscar notas:", error);
     } finally {
       setLoading(false);
     }
@@ -173,7 +230,7 @@ function TeachersHub() {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     const professorId = user?.professorId;
-    
+
     getAlunosByDisciplina();
     if (professorId) {
       getProfessorDisciplinaId(professorId);
@@ -181,7 +238,11 @@ function TeachersHub() {
     if (professorDisciplinaId) {
       getDocumentos();
     }
-  }, [disciplinaId, professorDisciplinaId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    if (students.length > 0) {
+      getNotasByDisciplina();
+    }
+  }, [disciplinaId, professorDisciplinaId, students.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openModal = (type, extra = {}) => setModal({ type, ...extra });
   const closeModal = () => setModal(null);
@@ -334,8 +395,11 @@ function TeachersHub() {
                                     student: {
                                       name: student.name,
                                       grade: student.bim1,
-                                      bimestre: "1º Bimestre",
+                                      bimestre: 1,
+                                      bimestreLabel: "1º Bimestre",
+                                      alunoDisciplinaId: student.alunoDisciplinaId,
                                     },
+                                    onSuccess: () => getNotasByDisciplina(),
                                   })
                                 }
                               >
@@ -355,8 +419,11 @@ function TeachersHub() {
                                   openModal("launchGrade", {
                                     student: {
                                       name: student.name,
-                                      nextBim: "1º Bimestre",
+                                      bimestre: 1,
+                                      bimestreLabel: "1º Bimestre",
+                                      alunoDisciplinaId: student.alunoDisciplinaId,
                                     },
+                                    onSuccess: () => getNotasByDisciplina(),
                                   })
                                 }
                               >
@@ -374,8 +441,11 @@ function TeachersHub() {
                                     student: {
                                       name: student.name,
                                       grade: student.bim2,
-                                      bimestre: "2º Bimestre",
+                                      bimestre: 2,
+                                      bimestreLabel: "2º Bimestre",
+                                      alunoDisciplinaId: student.alunoDisciplinaId,
                                     },
+                                    onSuccess: () => getNotasByDisciplina(),
                                   })
                                 }
                               >
@@ -395,8 +465,11 @@ function TeachersHub() {
                                   openModal("launchGrade", {
                                     student: {
                                       name: student.name,
-                                      nextBim: "2º Bimestre",
+                                      bimestre: 2,
+                                      bimestreLabel: "2º Bimestre",
+                                      alunoDisciplinaId: student.alunoDisciplinaId,
                                     },
+                                    onSuccess: () => getNotasByDisciplina(),
                                   })
                                 }
                               >
@@ -414,8 +487,11 @@ function TeachersHub() {
                                     student: {
                                       name: student.name,
                                       grade: student.bim3,
-                                      bimestre: "3º Bimestre",
+                                      bimestre: 3,
+                                      bimestreLabel: "3º Bimestre",
+                                      alunoDisciplinaId: student.alunoDisciplinaId,
                                     },
+                                    onSuccess: () => getNotasByDisciplina(),
                                   })
                                 }
                               >
@@ -435,8 +511,11 @@ function TeachersHub() {
                                   openModal("launchGrade", {
                                     student: {
                                       name: student.name,
-                                      nextBim: "3º Bimestre",
+                                      bimestre: 3,
+                                      bimestreLabel: "3º Bimestre",
+                                      alunoDisciplinaId: student.alunoDisciplinaId,
                                     },
+                                    onSuccess: () => getNotasByDisciplina(),
                                   })
                                 }
                               >
@@ -454,8 +533,11 @@ function TeachersHub() {
                                     student: {
                                       name: student.name,
                                       grade: student.bim4,
-                                      bimestre: "4º Bimestre",
+                                      bimestre: 4,
+                                      bimestreLabel: "4º Bimestre",
+                                      alunoDisciplinaId: student.alunoDisciplinaId,
                                     },
+                                    onSuccess: () => getNotasByDisciplina(),
                                   })
                                 }
                               >
@@ -475,8 +557,11 @@ function TeachersHub() {
                                   openModal("launchGrade", {
                                     student: {
                                       name: student.name,
-                                      nextBim: "4º Bimestre",
+                                      bimestre: 4,
+                                      bimestreLabel: "4º Bimestre",
+                                      alunoDisciplinaId: student.alunoDisciplinaId,
                                     },
+                                    onSuccess: () => getNotasByDisciplina(),
                                   })
                                 }
                               >
