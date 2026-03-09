@@ -1,4 +1,5 @@
-/* FUNDO GERAL */
+/* ── Layout ── */
+
 .main {
   min-height: 50vh;
   padding: 10px 80px;
@@ -7,6 +8,8 @@
 .profList {
   padding: 10px 80px 0 80px;
 }
+
+/* ── Título ── */
 
 .tituloPage h1 {
   font-size: 28px;
@@ -22,6 +25,8 @@
   margin-bottom: 4px;
 }
 
+/* ── Container da tabela ── */
+
 .containerTable {
   margin-top: 10px;
   background: #ffffff;
@@ -29,15 +34,16 @@
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   width: 100%;
-  height: 500px;       
+  height: 500px;
   overflow-y: auto;
- scrollbar-width: none;  
+  scrollbar-width: none;
 }
 
-.container-tabela::-webkit-scrollbar {
-    display: none;           
+.containerTable::-webkit-scrollbar {
+  display: none;
 }
 
+/* ── Toolbar ── */
 
 .tabelaActions {
   display: flex;
@@ -47,7 +53,58 @@
   padding: 16px 24px;
 }
 
-/* BOTÃO ADICIONAR */
+.buscarWrapper {
+  display: flex;
+  align-items: flex-start;
+  padding: 6px 12px;
+  width: 260px;
+  gap: 8px;
+}
+
+.inputBuscar {
+  background-color: #fefdfe;
+  border-radius: 40px;
+  width: 200px;
+  flex: 1;
+  font-size: 14px;
+  border: none;
+  color: #2c3e50;
+}
+
+.inputBuscar::placeholder {
+  color: #aab0bf;
+}
+
+.inputBuscar:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.btnBuscar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  color: #6c7a96;
+  transition: color 0.15s;
+}
+
+.btnBuscar:hover {
+  color: #1f2a44;
+}
+
+.btnBuscar:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .btnAdicionar {
   display: flex;
   align-items: center;
@@ -66,6 +123,17 @@
 
 .btnAdicionar:hover {
   background-color: #162035;
+}
+
+.btnAdicionar:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ── Tabela ── */
+
+.tableWrapper {
+  overflow-x: auto;
 }
 
 .table {
@@ -96,18 +164,7 @@
   background-color: #f9fafc;
 }
 
-/* BOTÕES AÇÃO */
-
-.btnBuscar:focus,
-.btnAdicionar:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.inputBuscar:focus {
-  outline: none;
-  box-shadow: none;
-}
+/* ── Paginação ── */
 
 .pagination {
   display: flex;
@@ -143,14 +200,14 @@
 }
 
 .btnPaginacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: 1px solid #d0d5e0;
   border-radius: 6px;
   width: 28px;
   height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
   color: #6c7a96;
   font-size: 14px;
@@ -165,46 +222,4 @@
 .btnPaginacao:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-}
-
-.buscarWrapper {
-  display: flex;
-  align-items: flex-start;
-  padding: 6px 12px;
-  width: 260px;
-  gap: 8px;
-}
-
-.inputBuscar {
-  background-color: #FEFDFE;
-  border-radius: 40px;
-  width: 200px;
-  flex: 1;
-  font-size: 14px;
-  border: none;
-  color: #2c3e50;
-}
-
-.inputBuscar::placeholder {
-  color: #aab0bf;
-}
-
-.btnBuscar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  color: #6c7a96;
-  transition: color 0.15s;
-}
-
-.btnBuscar:hover {
-  color: #1f2a44;
 }
