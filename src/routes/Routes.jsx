@@ -11,6 +11,8 @@ import AlunoHome from "../pages/FluxoAluno/AlunoHome/alunoMateriaList.jsx";
 import ObservacoesList from "../pages/FluxoAluno/ObservacoesHome/obervacoesList.jsx";
 import BoletimList from "../pages/FluxoAluno/Boletim/boletimList.jsx";
 import ProtectedRoute from "../components/protected-route/ProtectedRoute.jsx";
+import AlunoMateriaList from "../pages/FluxoAluno/AlunoHome/alunoMateriaList.jsx";
+import Boletim from "../pages/FluxoAluno/Boletim/boletimList.jsx";
 
 function AppRoutes() {
   return (
@@ -69,6 +71,11 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+        {/* Rotas do App.jsx movidas */}
+        <Route path="/CrudProfessor/profList" element={<ProfList />} />
+        <Route path="/CrudAluno/alunoList" element={<AlunosList />} />
+        <Route path="/CrudDisciplina/disciplinaList" element={<DisciplinaList />} />
+        <Route path="/boletim/BoletimList" element={<Boletim />} />
       </Routes>
     </BrowserRouter>
   );

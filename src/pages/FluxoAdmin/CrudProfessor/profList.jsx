@@ -1,7 +1,7 @@
 import Header from "../../../components/header/header";
 import styles from "./profList.module.css";
 import Professores from "../../../Service/Professores";
-import ProfessorDisciplina from "../../../Service/ProfessorDisciplina";
+import ProfessorDisciplina from "../../../Service/professorDisciplina";
 import CardProfessorTable from "../../../components/CardsProfessor/CardProfessorTable";
 import EditarProf from "../../../components/popupEditarCriar/editarProf";
 import { useMemo, useEffect, useState } from "react";

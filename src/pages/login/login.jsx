@@ -16,7 +16,7 @@ function Login() {
 
   useEffect(() => {
     const user = localStorage.getItem("user");
-    if (user) {
+    if (user) {  
       const userData = JSON.parse(user);
       redirectByRole(userData.roleId, userData.alunoId);
     }
