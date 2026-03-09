@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../components/modal/modal.css";
 import Professores from "../../Service/Professores";
 import Disciplinas from "../../Service/Disciplina";
-import ProfessorDisciplina from "../../../Service/ProfessorDisciplina";
+import ProfessorDisciplina from "../../Service/professorDisciplina";
 
 function EditarProf({ profId, onClose, onSaved }) {
 

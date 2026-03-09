@@ -180,30 +180,22 @@ function TeachersHub() {
         let bim2 = null;
         let bim3 = null;
         let bim4 = null;
-        let bim1Data = null;
-        let bim2Data = null;
-        let bim3Data = null;
-        let bim4Data = null;
 
         notasAluno.forEach((nota) => {
           if (nota.bimestre === 1) {
             bim1 = nota.valor;
-            bim1Data = nota;
             newNotasMap[`${student.alunoId}-1`] = nota;
           }
           if (nota.bimestre === 2) {
             bim2 = nota.valor;
-            bim2Data = nota;
             newNotasMap[`${student.alunoId}-2`] = nota;
           }
           if (nota.bimestre === 3) {
             bim3 = nota.valor;
-            bim3Data = nota;
             newNotasMap[`${student.alunoId}-3`] = nota;
           }
           if (nota.bimestre === 4) {
             bim4 = nota.valor;
-            bim4Data = nota;
             newNotasMap[`${student.alunoId}-4`] = nota;
           }
         });

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../components/modal/modal.css"; // shared modal styles
+import styles from "./editarAluno.module.css";
 import Alunos from "../../Service/Aluno";
 import Disciplina from "../../Service/Disciplina";
 import AlunoDisciplina from "../../Service/AlunoDisciplina";

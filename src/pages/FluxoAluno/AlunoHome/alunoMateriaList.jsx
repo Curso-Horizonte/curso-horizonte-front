@@ -1,7 +1,7 @@
 import Header from "../../../components/header/header";
 import styles from "./alunoMateriaList.module.css";
 import Disciplina from "../../../Service/Disciplina";
-import professorDisciplina from "../../Service/ProfessorDisciplina";
+import professorDisciplina from "../../../Service/professorDisciplina";
 import AlunoDisciplina from "../../../Service/AlunoDisciplina";
 import { useNavigate, useParams } from "react-router-dom";
 import CardAlunoMateria from "../../../componentes/CardsAlunoMateria/cardAlunoMateria";

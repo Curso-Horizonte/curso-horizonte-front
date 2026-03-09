@@ -1,5 +1,5 @@
 import "./login.css";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import loginImage from "../../assets/img-login.jpg";
 import infoIcon from "../../assets/info-icon.png";
@@ -18,15 +18,15 @@ function Login() {
     const user = localStorage.getItem("user");
     if (user) {
       const userData = JSON.parse(user);
-      redirectByRole(userData.roleId, userData.alunoId );
+      redirectByRole(userData.roleId, userData.alunoId);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const redirectByRole = (roleId, alunoId) => {
     if (roleId === 2) {
       navigate("/teachers");
     } else if (roleId === 3) {
-      navigate(`/aluno/6`);
+      navigate(`/aluno/${alunoId}`);
     } else if (roleId === 1) {
       navigate("/admin");
     }
@@ -71,8 +71,7 @@ function Login() {
         // Se for aluno (roleId === 3), busca o alunoId
          if (usuario.roleId === 3) {
             try {
-              const alunoResponse = await  Aluno.getAlunoById(usuario.id);
-              const aluno = alunoResponse.data; 
+              const aluno = await Aluno.getAlunoById(usuario.id);
               console.log("Dados do aluno:", aluno);
               if (aluno) {
                 alunoId = aluno.id;
@@ -101,7 +100,7 @@ function Login() {
         if (primeiroLogin === true) {
           navigate("/change-password");
         } else {
-          redirectByRole(usuario.roleId);
+          redirectByRole(usuario.roleId, alunoId);
         }
       }
     } catch (error) {

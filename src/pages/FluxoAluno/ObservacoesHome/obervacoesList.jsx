@@ -2,7 +2,7 @@ import Header from "../../../components/header/header";
 import styles from "./observacoesList.module.css";
 import ObservacaoService from "../../../Service/Observacao";
 import DocumentoService from "../../../Service/Documento";
-import ProfessorDisciplinaService from "../../Service/ProfessorDisciplina";
+import ProfessorDisciplinaService from "../../../Service/professorDisciplina";
 import CardObservacao from "../../../componentes/CardsObervacao/CardObervacao";
 import CardDocumentos from "../../../componentes/CardsObervacao/CardsDocumentos";
 import { useParams } from "react-router-dom";
@@ -16,6 +16,10 @@ function ObservacoesList() {
     const [loading, setLoading] = useState(true);
     const [materiaNome, setMateriaNome] = useState("");
     const [professorNome, setProfessorNome] = useState("");
+    const [modalDoc, setModalDoc] = useState(null);
+
+    const openDocModal = (doc) => setModalDoc(doc);
+    const closeDocModal = () => setModalDoc(null);
 
     useEffect(() => {
     async function fetchData() {
@@ -88,6 +92,7 @@ function ObservacoesList() {
                                     key={doc.id}
                                     titulo={doc.titulo}
                                     descricao={doc.conteudo}
+                                    onClick={() => openDocModal(doc)}
                                 />
                             ))}
                         </div>
@@ -96,6 +101,33 @@ function ObservacoesList() {
                     )}
                 </div>
             </main>
+
+            {/* Modal para visualização ampliada do documento */}
+            {modalDoc && (
+                <div className={styles.modalOverlay} onClick={closeDocModal}>
+                    <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.modalHeader}>
+                            <h2 className={styles.modalTitle}>{modalDoc.titulo}</h2>
+                            <button className={styles.modalCloseBtn} onClick={closeDocModal}>
+                                ×
+                            </button>
+                        </div>
+                        <div className={styles.modalBody}>
+                            <p className={styles.modalContent}>{modalDoc.conteudo}</p>
+                            {modalDoc.data && (
+                                <p className={styles.modalDate}>
+                                    Publicado em: {new Date(modalDoc.data).toLocaleDateString()}
+                                </p>
+                            )}
+                        </div>
+                        <div className={styles.modalFooter}>
+                            <button className={styles.modalBtn} onClick={closeDocModal}>
+                                Fechar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
