@@ -11,14 +11,15 @@ async function getAlunos() {
   }
 }
 
-async function getAlunoById(id) {
+async function getAlunoById(usuarioId) {
   try {
-    const response = await fetch(`${baseUrl}/get`);
+    const response = await fetch(`${baseUrl}/get/usuario/${usuarioId}`);
     if (!response.ok) throw new Error("Erro ao buscar aluno");
-    const data = await response.json();
-    return data.find(p => p.id === Number(id));
+    const aluno = await response.json();
+    return aluno; 
   } catch (error) {
-    console.error(error);
+    console.error("Erro ao buscar aluno:", error);
+    return null;
   }
 }
 

@@ -1,0 +1,77 @@
+/* styles moved to shared modal.css */
+
+.modal-header {
+  background-color: #1f3b63;
+  color: white;
+  padding: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.close-btn {
+  position: absolute;
+  right: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 30px;
+}
+
+
+label {
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #bdbdbd;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid #1f3b63;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-cancelar {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-salvar {
+  background-color: #1f3b63;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-salvar:hover {
+  background-color: #162b4a;
+}

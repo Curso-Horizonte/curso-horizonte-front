@@ -1,77 +1,85 @@
 import React, { useEffect, useState } from "react";
-import TopBar from "../../../componentes/elementos/topBar";
+import Header from "../../../components/header/header";
 import NotaService from "../../../Service/Nota";
+import AlunoDisciplinaService from "../../../Service/AlunoDisciplina";
+import DisciplinaService from "../../../Service/Disciplina";
 import styles from "./boletimList.module.css";
 import { useParams } from "react-router-dom";
 
 function Boletim() {
-
-  const alunoId = useParams().id;
+  const { id: alunoId } = useParams();
+  const [alunoNome, setAlunoNome] = useState("");
   const [notas, setNotas] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchNotas() {
+    async function fetchBoletim() {
       try {
-        const data = await NotaService.getNotas();
-        const alunoNotas = data.filter(n => n.alunoId === alunoId);
+        const alunoDisciplinas = await AlunoDisciplinaService.getAll();
+        const vinculosAluno = alunoDisciplinas.filter(ad => Number(ad.alunoId) === Number(alunoId));
+        if (vinculosAluno.length === 0) {
+          setNotas([]);
+          setLoading(false);
+          return;
+        }
 
-        const notasFormatadas = [];
+        setAlunoNome(vinculosAluno[0].alunoNome);
 
-        alunoNotas.forEach(n => {
-          let notaDisc = notasFormatadas.find(nd => nd.alunoDisciplinaId === n.alunoDisciplinaId);
-          if (!notaDisc) {
-            notaDisc = {
-              alunoDisciplinaId: n.alunoDisciplinaId,
-              disciplinaNome: n.disciplinaNome,
-              bimestre1: null,
-              bimestre2: null,
-              bimestre3: null,
-              bimestre4: null,
-            };
-            notasFormatadas.push(notaDisc);
-          }
+        const todasDisciplinas = await DisciplinaService.getDisciplinas();
+        const todasNotas = await NotaService.getNotas();
 
-          switch (n.bimestre) {
-            case 1:
-              notaDisc.bimestre1 = n.valor;
-              break;
-            case 2:
-              notaDisc.bimestre2 = n.valor;
-              break;
-            case 3:
-              notaDisc.bimestre3 = n.valor;
-              break;
-            case 4:
-              notaDisc.bimestre4 = n.valor;
-              break;
-          }
+        const boletim = vinculosAluno.map(vinc => {
+          const disciplina = todasDisciplinas.find(d => Number(d.id) === Number(vinc.disciplinaId));
+          // filtra notas pelo alunoDisciplinaId ou pelo nome do aluno
+          const notasDisc = todasNotas.filter(
+            n => n.alunoDisciplinaId === vinc.id || n.alunoNome === vinc.alunoNome
+          );
+
+          const notaObj = {
+            alunoDisciplinaId: vinc.id,
+            disciplinaNome: disciplina?.nome || `Disciplina ${vinc.id}`,
+            bimestre1: null,
+            bimestre2: null,
+            bimestre3: null,
+            bimestre4: null,
+            media: null,
+          };
+
+          notasDisc.forEach(n => {
+            switch (n.bimestre) {
+              case 1: notaObj.bimestre1 = n.valor; break;
+              case 2: notaObj.bimestre2 = n.valor; break;
+              case 3: notaObj.bimestre3 = n.valor; break;
+              case 4: notaObj.bimestre4 = n.valor; break;
+              default: break;
+            }
+          });
+
+          const valores = [notaObj.bimestre1, notaObj.bimestre2, notaObj.bimestre3, notaObj.bimestre4].filter(v => v !== null);
+          notaObj.media = valores.length > 0 ? (valores.reduce((a,b) => a+b, 0) / valores.length).toFixed(2) : null;
+
+          return notaObj;
         });
 
-        notasFormatadas.forEach(n => {
-          const valores = [n.bimestre1, n.bimestre2, n.bimestre3, n.bimestre4].filter(v => v !== null);
-          n.media = valores.length > 0 ? (valores.reduce((a, b) => a + b, 0) / valores.length).toFixed(2) : null;
-        });
-
-        setNotas(notasFormatadas);
+        setNotas(boletim);
       } catch (error) {
-        console.error("Erro ao buscar notas:", error);
+        console.error("Erro ao buscar boletim:", error);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchNotas();
+    fetchBoletim();
   }, [alunoId]);
 
-  if (loading) return <p>Carregando notas...</p>;
-  if (notas.length === 0) return <p>Nenhuma nota cadastrada para este aluno.</p>;
+  if (loading) return <p>Carregando boletim...</p>;
+  if (notas.length === 0) return <p>O aluno não possui disciplinas cadastradas ou notas lançadas.</p>;
 
   return (
     <>
-      <TopBar />
+      <Header />
       <header className={styles.header}>
-        <h1>Boletim do Aluno</h1>
+        <h1>Boletim do Aluno {alunoNome}</h1>
       </header>
       <main className={styles.main}>
         <table className={styles.table}>

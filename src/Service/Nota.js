@@ -85,6 +85,7 @@ async function getNotaByAlunoDisciplina(alunoId, disciplinaId) {
   }
 }
 
+
 export default {
   getNotas,
   addNota,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from "./adminHome.module.css";
-import TopBar from "../../../componentes/elementos/topBar";
+import Header from "../../../components/header/header";
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 function AdminHome() {
@@ -9,20 +9,20 @@ function AdminHome() {
     const navigate = useNavigate();
 
     const handleProfList = () => {
-      navigate('/CrudProfessor/profList');
+      navigate('/admin/professores');
     };
 
     const handleAlunoList = () => {
-      navigate('/CrudAluno/alunoList');
+      navigate('/admin/alunos');
     };
 
     const handleDisciplinaList = () => {
-      navigate('/CrudDisciplina/disciplinaList');
+      navigate('/admin/disciplinas');
     }
 
     return (
        <>
-        <TopBar />
+        <Header />
 
         <header className={styles.adminHome}>
             <div className={styles.tituloPage}>

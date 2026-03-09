@@ -1,11 +1,12 @@
 import React from "react";
+import styles from "./CardDocumento.module.css";
 
 function CardDocumentos({ id, titulo, descricao, onClick }) {
 
     return (
         <div className={styles.card}>
             <h2>{titulo}</h2>
-            <button onClick={onClick}>Abrir documento</button>
+            <p>{descricao}</p>
         </div>
     );
 }

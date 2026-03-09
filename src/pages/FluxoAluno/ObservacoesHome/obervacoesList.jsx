@@ -1,12 +1,13 @@
-import TopBar from "../../../componentes/elementos/topBar";
+import Header from "../../../components/header/header";
 import styles from "./observacoesList.module.css";
 import ObservacaoService from "../../../Service/Observacao";
 import DocumentoService from "../../../Service/Documento";
-import ProfessorDisciplina from "../../../Service/professorDisciplina";
+import ProfessorDisciplinaService from "../../Service/ProfessorDisciplina";
 import CardObservacao from "../../../componentes/CardsObervacao/CardObervacao";
 import CardDocumentos from "../../../componentes/CardsObervacao/CardsDocumentos";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useMemo, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function ObservacoesList() {
     const { disciplinaId } = useParams();
@@ -53,7 +54,7 @@ function ObservacoesList() {
 
     return (
         <>
-            <TopBar />
+            <Header />
             <header className={styles.alunoHeader}>
                 <div className={styles.tituloPage}>
                     <h1>Observações e Documentos</h1>
