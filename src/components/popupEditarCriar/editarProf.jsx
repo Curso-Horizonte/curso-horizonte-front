@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import "../../components/modal/modal.css";
 import Professores from "../../Service/Professores";
 import Disciplinas from "../../Service/Disciplina";
 import ProfessorDisciplina from "../../Service/ProfessorDisciplina";
-import styles from "./editarProf.module.css";
 
 function EditarProf({ profId, onClose, onSaved }) {
 
@@ -105,13 +105,16 @@ function EditarProf({ profId, onClose, onSaved }) {
 
     return (
 
-        <div className={styles.overlay}>
+        <div className="modal-overlay">
 
-            <div className={styles.modal}>
+            <div className="modal-container">
 
-                <h2>{isEditing ? "Editar Professor" : "Criar Professor"}</h2>
+                <div className="modal-header">
+                    <h2 className="modal-title">{isEditing ? "Editar Professor" : "Criar Professor"}</h2>
+                    <button type="button" className="modal-close-btn" onClick={onClose}>✕</button>
+                </div>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="modal-body">
 
                     <input
                         placeholder="Nome"
@@ -182,7 +185,7 @@ function EditarProf({ profId, onClose, onSaved }) {
 
                     <h3>Disciplinas</h3>
 
-                    <div className={styles.disciplinasBox}>
+                    <div className="modal-field disciplinas-container">
 
                         {disciplinas.map(d => (
 
@@ -202,14 +205,14 @@ function EditarProf({ profId, onClose, onSaved }) {
 
                     </div>
 
-                    <div className={styles.modalButtons}>
+                    <div className="modal-footer">
 
-                        <button type="submit">
-                            Salvar
+                        <button type="button" className="modal-btn modal-btn-cancel" onClick={onClose}>
+                            Cancelar
                         </button>
 
-                        <button type="button" onClick={onClose}>
-                            Cancelar
+                        <button type="submit" className="modal-btn modal-btn-primary">
+                            Salvar
                         </button>
 
                     </div>

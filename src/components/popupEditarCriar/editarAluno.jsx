@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./editarAluno.module.css";
+import "../../components/modal/modal.css"; // shared modal styles
 import Alunos from "../../Service/Aluno";
 import Disciplina from "../../Service/Disciplina";
 import AlunoDisciplina from "../../Service/AlunoDisciplina";
@@ -118,14 +118,14 @@ function EditarAluno({ alunoId, onClose, onSaved }) {
     };
 
     return (
-        <div className={styles.overlay}>
-            <div className={styles.modal}>
-                <div className={styles.modalHeader}>
-                    <h2>{isEditing ? "Editar Aluno" : "Criar Aluno"}</h2>
-                    <button type="button" className={styles.closeBtn} onClick={onClose}>✕</button>
+        <div className="modal-overlay">
+            <div className="modal-container">
+                <div className="modal-header">
+                    <h2 className="modal-title">{isEditing ? "Editar Aluno" : "Criar Aluno"}</h2>
+                    <button type="button" className="modal-close-btn" onClick={onClose}>✕</button>
                 </div>
 
-                <form onSubmit={handleSubmit} className={styles.modalBody}>
+                <form onSubmit={handleSubmit} className="modal-body">
                     <input 
                         placeholder="Nome" 
                         value={alunoData.usuario.nome} 
@@ -168,9 +168,9 @@ function EditarAluno({ alunoId, onClose, onSaved }) {
                         ))}
                     </div>
 
-                    <div className={styles.buttons}>
-                        <button type="button" onClick={onClose}>Cancelar</button>
-                        <button type="submit" className={styles.btnSalvar}>Salvar</button>
+                    <div className="modal-footer">
+                        <button type="button" className="modal-btn modal-btn-cancel" onClick={onClose}>Cancelar</button>
+                        <button type="submit" className="modal-btn modal-btn-primary">Salvar</button>
                     </div>
                 </form>
             </div>

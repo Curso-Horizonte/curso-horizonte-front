@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import "../../components/modal/modal.css";
 import Disciplina from "../../Service/Disciplina";
-import styles from "./editarDisciplina.module.css";
 
 function EditarDisciplina({ disciplinaId, onClose, onSaved }) {
     const isEditing = Boolean(disciplinaId);
@@ -58,20 +58,20 @@ function EditarDisciplina({ disciplinaId, onClose, onSaved }) {
     };
 
     return (
-        <div className={styles.overlay}>
-            <div className={styles.modal}>
-                <div className={styles.modalHeader}>
-                    <h2>{isEditing ? "Editar Disciplina" : "Criar Disciplina"}</h2>
+        <div className="modal-overlay">
+            <div className="modal-container">
+                <div className="modal-header">
+                    <h2 className="modal-title">{isEditing ? "Editar Disciplina" : "Criar Disciplina"}</h2>
                     <button
                         type="button"
-                        className={styles.closeBtn}
+                        className="modal-close-btn"
                         onClick={onClose}
                     >
                         ✕
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className={styles.modalBody}>
+                <form onSubmit={handleSubmit} className="modal-body">
                     <input
                         type="text"
                         placeholder="Nome da Disciplina"
@@ -80,17 +80,17 @@ function EditarDisciplina({ disciplinaId, onClose, onSaved }) {
                         required
                     />
 
-                    <div className={styles.buttons}>
+                    <div className="modal-footer">
                         <button
                             type="button"
-                            className={styles.btnCancelar}
+                            className="modal-btn modal-btn-cancel"
                             onClick={onClose}
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
-                            className={styles.btnSalvar}
+                            className="modal-btn modal-btn-primary"
                         >
                             {isEditing ? "Salvar Alterações" : "Criar Disciplina"}
                         </button>
